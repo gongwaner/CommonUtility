@@ -7,7 +7,7 @@
 #include <vector>
 #include <unordered_set>
 
-#include "Color.h"
+#include "../Common/Color.h"
 
 
 class vtkPolyData;

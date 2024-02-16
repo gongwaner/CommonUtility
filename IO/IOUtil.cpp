@@ -158,4 +158,23 @@ namespace IOUtil
 
         std::cout << "Saved colored polydata to " << fileDir << std::endl;
     }
+
+    void WriteFeatureVectorToFile(const char* dir, const std::vector<double>& dataVector, const bool append)
+    {
+        if(!IsValidDirectory(dir))
+            CreateParentDirectory(dir);
+
+        std::ofstream outfile;
+
+        if(append)
+            outfile.open(dir, std::ios_base::app);
+        else
+            outfile.open(dir, std::ios_base::trunc);
+
+        for(const auto& value: dataVector)
+            outfile << value << std::endl;
+
+        outfile.close();
+        std::cout << "Saved feature file to " << dir << std::endl;
+    }
 }

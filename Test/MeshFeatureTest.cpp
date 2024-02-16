@@ -1,7 +1,7 @@
 #include "MeshFeatureTest.h"
 
-#include "../MeshFeature/MeshFeature.h"
-#include "../MeshFeature/MeshFeatureUtil.h"
+#include "../Mesh/MeshFeature.h"
+#include "../Mesh/MeshFeatureUtil.h"
 #include "../IO/IOUtil.h"
 
 #include <vtkPolyData.h>
