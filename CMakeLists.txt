@@ -41,6 +41,7 @@ add_executable(${PROJECT_NAME} MACOSX_BUNDLE main.cpp
         Mesh/MeshFeatureUtil.cpp
         Test/MeshFeatureTest.cpp
         Mesh/TriTriIntersection.cpp
+        CollisionDetection/CollisionDetectionUtil.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${VTK_LIBRARIES})
