@@ -19,7 +19,7 @@ namespace IOUtil
     std::string GetFileExtension(const char* fileDir)
     {
         const auto path = std::filesystem::path(fileDir);
-        return path.extension();
+        return path.extension().string();
     }
 
     bool PathExist(const char* fileDir)

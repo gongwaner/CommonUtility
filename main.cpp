@@ -36,13 +36,13 @@ int main()
     printf("reading %s\n", inputFile.string().c_str());
 
 
-    auto polyData = IOUtil::ReadMesh(inputFile.c_str());
+    auto polyData = IOUtil::ReadMesh(inputFile.string().c_str());
     auto outDir = dataDir;
     outDir = outDir.append("output");
     const auto outFile = outDir.append("testResult.ply");
     std::cout << "outFile: " << outFile << std::endl;
 
-    MeshFeatureTest::WriteMeshMeanCurvatureFeature(polyData, outFile.c_str());
+    MeshFeatureTest::WriteMeshMeanCurvatureFeature(polyData, outFile.string().c_str());
 
     return 0;
 }
