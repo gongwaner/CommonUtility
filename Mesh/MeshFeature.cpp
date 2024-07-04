@@ -1,12 +1,12 @@
 #include "MeshFeature.h"
 
-#include "MeshFeatureUtil.h"
-
 #include <vtkPolyData.h>
 #include <vtkCurvatures.h>
 #include <vtkPointData.h>
 #include <vtkDoubleArray.h>
 #include <vtkVectorOperators.h>
+
+#include "MeshFeatureUtil.h"
 
 
 namespace MeshFeature

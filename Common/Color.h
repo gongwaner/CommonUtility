@@ -4,6 +4,9 @@
 
 namespace Color
 {
+    //VTK color
+    const std::string ColorArrayName = "Colors";
+
     //fundamental colors
     const vtkVector4d White{255, 255, 255, 255};
     const vtkVector4d Black{0, 0, 0, 255};

@@ -27,17 +27,4 @@ namespace TestUtil
 
         mesh = appendMesh->GetOutput();
     }
-
-    vtkSmartPointer<vtkPolyData> GetCombinedPolyData(const std::vector<vtkSmartPointer<vtkPolyData>>& meshes)
-    {
-        if(meshes.size() == 1)
-            return meshes[0];
-
-        auto appendFilter = vtkSmartPointer<vtkAppendPolyData>::New();
-        for(const auto& mesh: meshes)
-            appendFilter->AddInputData(mesh);
-        appendFilter->Update();
-
-        return appendFilter->GetOutput();
-    }
 }

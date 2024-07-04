@@ -1,10 +1,10 @@
 #include "MeshFeatureTest.h"
 
+#include <vtkPolyData.h>
+
 #include "../Mesh/MeshFeature.h"
 #include "../Mesh/MeshFeatureUtil.h"
 #include "../IO/IOUtil.h"
-
-#include <vtkPolyData.h>
 
 
 namespace MeshFeatureTest

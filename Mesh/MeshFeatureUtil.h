@@ -14,8 +14,6 @@ class vtkPolyData;
 
 namespace MeshFeatureUtil
 {
-    const std::string colorArrayName = "Colors";
-
     template<typename T>
     void ClampVector(std::vector<T>& vector, const T& min, const T& max)
     {
@@ -34,7 +32,7 @@ namespace MeshFeatureUtil
      */
     std::vector<vtkSmartPointer<vtkPolyData>> GetAllComponents(vtkSmartPointer<vtkPolyData> polyData, int minCellsCnt);
 
-    void EnableMeshColor(vtkSmartPointer<vtkPolyData> polyData);
+    void EnableMeshColor(vtkSmartPointer<vtkPolyData> polyData, const vtkVector4d& initColor = Color::White);
 
     void SetVertexColor(vtkSmartPointer<vtkPolyData> polyData, int vid, const vtkVector4d& color);
 

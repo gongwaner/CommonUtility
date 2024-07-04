@@ -90,13 +90,12 @@ namespace MeshFeatureUtil
         return componentVec;
     }
 
-    void EnableMeshColor(vtkSmartPointer<vtkPolyData> polyData)
+    void EnableMeshColor(vtkSmartPointer<vtkPolyData> polyData, const vtkVector4d& initColor)
     {
         auto colorArray = vtkSmartPointer<vtkUnsignedCharArray>::New();
         colorArray->SetNumberOfComponents(4);
-        colorArray->SetName(colorArrayName.c_str());
+        colorArray->SetName(Color::ColorArrayName.c_str());
 
-        auto initColor = Color::White;
         for(int i = 0; i < polyData->GetNumberOfPoints(); ++i)
         {
             colorArray->InsertNextTuple4(initColor[0], initColor[1], initColor[2], initColor[3]);
@@ -107,11 +106,11 @@ namespace MeshFeatureUtil
 
     void SetVertexColor(vtkSmartPointer<vtkPolyData> polyData, const int vid, const vtkVector4d& color)
     {
-        auto scalarArray = polyData->GetPointData()->GetScalars(colorArrayName.c_str());
+        auto scalarArray = polyData->GetPointData()->GetScalars(Color::ColorArrayName.c_str());
         if(!scalarArray)
         {
             EnableMeshColor(polyData);
-            scalarArray = polyData->GetPointData()->GetScalars(colorArrayName.c_str());
+            scalarArray = polyData->GetPointData()->GetScalars(Color::ColorArrayName.c_str());
         }
 
         auto colorPtr = static_cast<unsigned char*>(scalarArray->GetVoidPointer(0));
@@ -247,7 +246,7 @@ namespace MeshFeatureUtil
     {
         auto colorArray = vtkSmartPointer<vtkUnsignedCharArray>::New();
         colorArray->SetNumberOfComponents(4);
-        colorArray->SetName(colorArrayName.c_str());
+        colorArray->SetName(Color::ColorArrayName.c_str());
 
         //in case feature.size() < polyData->GetNumberOfPoints(), assign it a default color
         for(int i = 0; i < polyData->GetNumberOfPoints(); ++i)
