@@ -48,6 +48,7 @@ add_executable(${PROJECT_NAME} MACOSX_BUNDLE main.cpp
         Mesh/MeshUtil.cpp
         Visualization/VisualizationUtil.cpp
         Test/TestUtil.cpp
+        Mesh/GeometricObjectUtil.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${VTK_LIBRARIES})

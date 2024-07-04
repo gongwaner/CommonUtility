@@ -21,4 +21,28 @@ namespace CollisionDetectionUtil
 
         return rayOrigin + t * rayDir;
     }
+
+    bool RayIntersectsAABB(const vtkVector3d& rayStart, const vtkVector3d& rayEnd, const double bounds[6])
+    {
+        const auto dir = rayEnd - rayStart;
+        const auto invDir = vtkVector3d(1.0 / dir[0], 1.0 / dir[1], 1.0 / dir[2]);
+
+        double t1 = (bounds[0] - rayStart[0]) * invDir[0];//xmin
+        double t2 = (bounds[1] - rayStart[0]) * invDir[0];//xmax
+        double t3 = (bounds[2] - rayStart[1]) * invDir[1];//ymin
+        double t4 = (bounds[3] - rayStart[1]) * invDir[1];//ymax
+        double t5 = (bounds[4] - rayStart[2]) * invDir[2];//zmin
+        double t6 = (bounds[5] - rayStart[2]) * invDir[2];//zmax
+
+        double tMin = std::max(std::max(std::min(t1, t2), std::min(t3, t4)), std::min(t5, t6));
+        double tMax = std::min(std::min(std::max(t1, t2), std::max(t3, t4)), std::max(t5, t6));
+
+        if(tMax < 0)//ray is intersecting AABB, but the whole AABB is behind us
+            return false;
+
+        if(tMin > tMax)//ray doesn't intersect AABB
+            return false;
+
+        return true;
+    }
 }
