@@ -2,6 +2,7 @@
 
 #include <vtkPolyData.h>
 #include <vtkOBBTree.h>
+#include <vtkAppendPolyData.h>
 
 namespace MeshUtil
 {
@@ -23,5 +24,18 @@ namespace MeshUtil
         obbTree->BuildLocator();
 
         return obbTree;
+    }
+
+    vtkSmartPointer<vtkPolyData> GetCombinedPolyData(const std::vector<vtkSmartPointer<vtkPolyData>>& meshes)
+    {
+        if(meshes.size() == 1)
+            return meshes[0];
+
+        auto appendFilter = vtkSmartPointer<vtkAppendPolyData>::New();
+        for(const auto& mesh: meshes)
+            appendFilter->AddInputData(mesh);
+        appendFilter->Update();
+
+        return appendFilter->GetOutput();
     }
 }
