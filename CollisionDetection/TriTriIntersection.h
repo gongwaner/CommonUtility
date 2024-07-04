@@ -1,4 +1,4 @@
-namespace IntersectionUtil
+namespace CollisionDetectionUtil
 {
     /**
      *  "Fast and Robust Triangle-Triangle Overlap Test using Orientation Predicates"  by Philippe Guigue and Olivier Devillers

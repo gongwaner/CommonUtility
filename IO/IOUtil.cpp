@@ -9,8 +9,12 @@
 #include <vtkSTLWriter.h>
 #include <vtkPolyDataReader.h>
 
+#include <vtkImageData.h>
+#include <vtkDICOMImageReader.h>
+#include <vtkImageCast.h>
+#include <vtkPNGWriter.h>
+
 #include <iostream>
-#include <sstream>
 #include <filesystem>
 
 
@@ -176,5 +180,46 @@ namespace IOUtil
 
         outfile.close();
         std::cout << "Saved feature file to " << dir << std::endl;
+    }
+
+    vtkSmartPointer<vtkImageData> ReadImageData(const char* folder)
+    {
+        if(!PathExist(folder))
+        {
+            throw std::runtime_error("ReadImageData(). Folder does not exist!");
+        }
+
+        const auto path = std::filesystem::path(folder);
+        std::cout << "reading " << path << std::endl;
+
+        auto reader = vtkSmartPointer<vtkDICOMImageReader>::New();
+        reader->SetDirectoryName(folder);
+        reader->Update();
+
+        return reader->GetOutput();
+    }
+
+    void WritePng(const char* fileDir, vtkImageData* imageData, const bool isUnsignedShort)
+    {
+        if(!IsValidDirectory(fileDir))
+        {
+            std::cout << "Creating Directory..." << std::endl;
+
+            const auto path = std::filesystem::path(fileDir);
+            const auto parentDir = path.parent_path();
+            std::filesystem::create_directories(parentDir);
+        }
+
+        //png only supports unsigned char/short so cast it before export
+        auto castFilter = vtkSmartPointer<vtkImageCast>::New();
+        castFilter->SetInputData(imageData);
+        isUnsignedShort ? castFilter->SetOutputScalarTypeToUnsignedShort() : castFilter->SetOutputScalarTypeToUnsignedChar();
+        castFilter->Update();
+        auto output = castFilter->GetOutput();
+
+        auto writer = vtkSmartPointer<vtkPNGWriter>::New();
+        writer->SetFileName(fileDir);
+        writer->SetInputData(output);
+        writer->Write();
     }
 }

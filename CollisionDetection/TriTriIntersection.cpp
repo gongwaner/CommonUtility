@@ -3,7 +3,7 @@
 #include <cstdlib>
 
 
-namespace IntersectionUtil
+namespace CollisionDetectionUtil
 {
     double Dot(const double v1[3], const double v2[3])
     {

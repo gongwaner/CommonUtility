@@ -15,10 +15,12 @@ find_package(VTK COMPONENTS
         FiltersCore
         FiltersGeneral
         IOGeometry
+        IOImage
         IOLegacy
         IOPLY
         IOXML
         InteractionStyle
+        InteractionImage
         InteractionWidgets
         RenderingAnnotation
         RenderingContextOpenGL2
@@ -40,9 +42,12 @@ add_executable(${PROJECT_NAME} MACOSX_BUNDLE main.cpp
         Mesh/MeshFeature.cpp
         Mesh/MeshFeatureUtil.cpp
         Test/MeshFeatureTest.cpp
-        Mesh/TriTriIntersection.cpp
+        CollisionDetection/TriTriIntersection.cpp
         CollisionDetection/CollisionDetectionUtil.cpp
         Transformation/TransformUtil.cpp
+        Mesh/MeshUtil.cpp
+        Visualization/VisualizationUtil.cpp
+        Test/TestUtil.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${VTK_LIBRARIES})

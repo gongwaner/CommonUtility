@@ -4,13 +4,17 @@
 #include <vtkVector.h>
 
 
+class vtkMatrix3x3;
 class vtkMatrix4x4;
-
 class vtkPolyData;
-
 class vtkImageData;
+
 namespace TransformUtil
 {
+    vtkSmartPointer<vtkMatrix3x3> GetRotationMatrix(double rotationAngleX, double rotationAngleY, double rotationAngleZ);
+
+    vtkSmartPointer<vtkMatrix4x4> GetTransformationMatrix(const vtkVector3d& center, const vtkVector3d& translation, const vtkVector3d& rotation);
+
     vtkVector3d GetTransformedPoint(const double point[3], vtkMatrix4x4* transformMat);
 
     vtkVector3d GetTransformedPoint(const vtkVector3d& point, vtkMatrix4x4* transformMat);
@@ -34,5 +38,3 @@ namespace TransformUtil
 
     vtkSmartPointer<vtkImageData> GetTransformedImageData(vtkSmartPointer<vtkImageData> imageData, vtkMatrix4x4* transformMat, bool cubic = false);
 }
-
-
