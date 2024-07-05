@@ -5,7 +5,8 @@
 
 namespace CollisionDetectionUtil
 {
-    std::optional<vtkVector3d> GetRayPlaneIntersectionPoint(const vtkVector3d& rayOrigin, const vtkVector3d& rayDir, const vtkVector3d& planeOrigin, const vtkVector3d& planeNormal)
+    std::optional<vtkVector3d> GetRayPlaneIntersectionPoint(const vtkVector3d& rayOrigin, const vtkVector3d& rayDir, const vtkVector3d& planeOrigin,
+                                                            const vtkVector3d& planeNormal)
     {
         //calculate the denominator
         const auto denominator = rayDir.Dot(planeNormal);
@@ -20,6 +21,25 @@ namespace CollisionDetectionUtil
         const auto t = -(planeNormal.Dot(rayOrigin) + d) / denominator;
 
         return rayOrigin + t * rayDir;
+    }
+
+    std::optional<vtkVector3d> GetRaySphereIntersectionPoint(const vtkVector3d& rayOrigin, const vtkVector3d& rayDir, const vtkVector3d& sphereCenter, const double radius)
+    {
+        const auto co = rayOrigin - sphereCenter;
+        const auto a = rayDir.SquaredNorm();
+        const auto b = rayDir.Dot(co);
+        const auto c = co.SquaredNorm() - radius * radius;
+        const auto delta = b * b - a * c;
+
+        if(delta < 0)
+            return std::nullopt;
+
+        //1 or 2 solutions, take the closest (positive) intersection
+        const double sqrtDelta = sqrt(delta);
+        const double tMin = (-b - sqrtDelta) / a;
+        const double tMax = (-b + sqrtDelta) / a;
+
+        return rayOrigin + tMin * rayDir;
     }
 
     bool RayIntersectsAABB(const vtkVector3d& rayStart, const vtkVector3d& rayEnd, const double bounds[6])

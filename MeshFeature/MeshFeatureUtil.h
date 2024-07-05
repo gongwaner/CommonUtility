@@ -5,7 +5,6 @@
 #include <vtkColorSeries.h>
 
 #include <vector>
-#include <unordered_set>
 
 #include "../Common/Color.h"
 
@@ -23,26 +22,6 @@ namespace MeshFeatureUtil
                            return std::clamp(value, min, max);
                        });
     }
-
-    vtkSmartPointer<vtkPolyData> GetLargestComponent(vtkPolyData* polyData);
-
-    /**
-     * Get all connected components of a given input polydata
-     * @param minCellsCnt for optimization purpose, skip components whose cell cnt < specified minimum cells cnt
-     */
-    std::vector<vtkSmartPointer<vtkPolyData>> GetAllComponents(vtkSmartPointer<vtkPolyData> polyData, int minCellsCnt);
-
-    /**
-     * Extract the topological neighbors of given vid
-     * @return vector of neighbor vids as std::unordered_set
-     */
-    std::unordered_set<int> GetNeighborVids(vtkPolyData* polyData, int vid);
-
-    /**
-     * Extract the topological n ring neighbors vids of given vid
-     * @return vector of n ring neighbor vids. Note: the input vertex itself is included in result.
-     */
-    std::vector<int> GetNRingNeighbors(vtkPolyData* polyData, int vid, int nring);
 
     /**
      * Color mapping of scalar values

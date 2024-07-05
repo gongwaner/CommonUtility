@@ -39,8 +39,8 @@ set(CMAKE_NINJA_FORCE_RESPONSE_FILE "ON" CACHE BOOL "Force Ninja to use response
 add_executable(${PROJECT_NAME} MACOSX_BUNDLE main.cpp
         Common/Color.h
         IO/IOUtil.cpp
-        Mesh/MeshFeature.cpp
-        Mesh/MeshFeatureUtil.cpp
+        MeshFeature/MeshFeature.cpp
+        MeshFeature/MeshFeatureUtil.cpp
         Test/MeshFeatureTest.cpp
         CollisionDetection/TriTriIntersection.cpp
         CollisionDetection/CollisionDetectionUtil.cpp

@@ -2,8 +2,8 @@
 
 #include <vtkPolyData.h>
 
-#include "../Mesh/MeshFeature.h"
-#include "../Mesh/MeshFeatureUtil.h"
+#include "../MeshFeature/MeshFeature.h"
+#include "../MeshFeature/MeshFeatureUtil.h"
 #include "../IO/IOUtil.h"
 
 

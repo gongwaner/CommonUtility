@@ -10,9 +10,9 @@
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
-#include <vtkPolyDataConnectivityFilter.h>
 
 #include <queue>
+
 
 namespace MeshFeatureUtil
 {
@@ -42,112 +42,6 @@ namespace MeshFeatureUtil
         }
 
         return lut;
-    }
-
-    vtkSmartPointer<vtkPolyData> GetLargestComponent(vtkPolyData* polyData)
-    {
-        auto connectivityFilter = vtkSmartPointer<vtkPolyDataConnectivityFilter>::New();
-        connectivityFilter->SetInputData(polyData);
-        connectivityFilter->SetExtractionModeToLargestRegion();
-        connectivityFilter->Update();
-
-        return connectivityFilter->GetOutput();
-    }
-
-    std::vector<vtkSmartPointer<vtkPolyData>> GetAllComponents(vtkSmartPointer<vtkPolyData> polyData, const int minCellsCnt)
-    {
-        auto connectivityFilter = vtkSmartPointer<vtkPolyDataConnectivityFilter>::New();
-        connectivityFilter->SetInputData(polyData);
-        connectivityFilter->SetExtractionModeToAllRegions();
-        connectivityFilter->Update();
-
-        int componentCnt = connectivityFilter->GetNumberOfExtractedRegions();
-        printf("component cnt: %i\n", componentCnt);
-
-        std::vector<vtkSmartPointer<vtkPolyData>> componentVec;
-        componentVec.reserve(componentCnt);
-
-        for(int regionID = 0; regionID < componentCnt; ++regionID)
-        {
-            //select the region to extract
-            connectivityFilter->SetExtractionModeToSpecifiedRegions();
-            connectivityFilter->AddSpecifiedRegion(regionID);
-            connectivityFilter->Update();
-
-            auto component = connectivityFilter->GetOutput();
-            if(component->GetNumberOfCells() >= minCellsCnt)
-            {
-                auto copy = vtkSmartPointer<vtkPolyData>::New();
-                copy->DeepCopy(component);
-                componentVec.push_back(copy);
-            }
-
-            //delete selected component
-            connectivityFilter->DeleteSpecifiedRegion(regionID);
-            connectivityFilter->Update();
-        }
-
-        return componentVec;
-    }
-
-    std::unordered_set<int> GetNeighborVids(vtkPolyData* polyData, const int vid)
-    {
-        //get all cells that vertex 'id' is a part of
-        auto cellIdList = vtkSmartPointer<vtkIdList>::New();
-        polyData->GetPointCells(vid, cellIdList);
-
-        std::unordered_set<int> neighborsSet;
-
-        for(vtkIdType i = 0; i < cellIdList->GetNumberOfIds(); i++)
-        {
-            //get all vids in cell
-            auto cellVids = vtkSmartPointer<vtkIdList>::New();
-            polyData->GetCellPoints(cellIdList->GetId(i), cellVids);;
-
-            for(vtkIdType j = 0; j < cellVids->GetNumberOfIds(); ++j)
-            {
-                auto neighborVid = cellVids->GetId(j);
-                if(neighborVid != vid)
-                    neighborsSet.insert(neighborVid);
-            }
-        }
-
-        return neighborsSet;
-    }
-
-    std::vector<int> GetNRingNeighbors(vtkPolyData* polyData, const int vid, const int nring)
-    {
-        std::vector<bool> visited(polyData->GetNumberOfPoints(), false);
-        std::queue<std::pair<int, int>> queue;//<vid, ringID> pair
-        std::vector<int> nringNeighbors;
-
-        queue.push(std::make_pair(vid, 0));
-        visited[vid] = true;
-
-        while(!queue.empty())
-        {
-            auto pair = queue.front();
-            auto vertexID = pair.first;
-            auto ringID = pair.second;
-            queue.pop();
-
-            nringNeighbors.push_back(vertexID);
-
-            if(ringID >= nring)
-                continue;
-
-            auto neighbors = GetNeighborVids(polyData, vertexID);
-            for(const auto& neighborVid: neighbors)
-            {
-                if(!visited[neighborVid])
-                {
-                    visited[neighborVid] = true;
-                    queue.push(std::make_pair(neighborVid, ringID + 1));
-                }
-            }
-        }
-
-        return nringNeighbors;
     }
 
     void VisualizeFeature(vtkSmartPointer<vtkPolyData> polyData, const char* scalarID,

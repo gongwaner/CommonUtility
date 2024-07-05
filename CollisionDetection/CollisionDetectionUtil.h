@@ -7,6 +7,8 @@ namespace CollisionDetectionUtil
 {
     std::optional<vtkVector3d> GetRayPlaneIntersectionPoint(const vtkVector3d& rayOrigin, const vtkVector3d& rayDir, const vtkVector3d& planeOrigin, const vtkVector3d& planeNormal);
 
+    std::optional<vtkVector3d> GetRaySphereIntersectionPoint(const vtkVector3d& rayOrigin, const vtkVector3d& rayDir, const vtkVector3d& sphereCenter, double radius);
+
     /**
      * Test intersection between ray and AABB(axis aligned bounding box).
      * the bounding box is represented by bounds[6]{xmin, xmax, ymin, ymax, zmin, zmax}

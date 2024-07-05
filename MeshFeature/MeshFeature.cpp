@@ -7,6 +7,7 @@
 #include <vtkVectorOperators.h>
 
 #include "MeshFeatureUtil.h"
+#include "../Mesh/MeshUtil.h"
 
 
 namespace MeshFeature
@@ -186,7 +187,7 @@ namespace MeshFeature
 
         for(int i = 0; i < verticesCnt; ++i)
         {
-            const auto neighbors = MeshFeatureUtil::GetNRingNeighbors(inputPolyData, i, nring);
+            const auto neighbors = MeshUtil::GetNRingNeighbors(inputPolyData, i, nring);
 
             std::vector<vtkVector3d> points;
             points.reserve(neighbors.size());
@@ -211,7 +212,7 @@ namespace MeshFeature
         for(int i = 0; i < cnt; ++i)
         {
             const auto vid = selectedIndices[i];
-            const auto neighbors = MeshFeatureUtil::GetNRingNeighbors(inputPolyData, vid, nring);
+            const auto neighbors = MeshUtil::GetNRingNeighbors(inputPolyData, vid, nring);
 
             std::vector<vtkVector3d> points;
             points.reserve(neighbors.size());
