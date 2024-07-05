@@ -39,7 +39,7 @@ int main()
     outDir = outDir.append("output");
 
     UnitTest::MeshFeatureTest meshFeatureTest;
-    meshFeatureTest.SetUp(inputFile.c_str(), outDir);
+    meshFeatureTest.SetUp(inputFile.string().c_str(), outDir);
     meshFeatureTest.TestMeanCurvatureFeature();
     meshFeatureTest.TestGaussianCurvatureFeature();
     meshFeatureTest.TestPCAFeature();
