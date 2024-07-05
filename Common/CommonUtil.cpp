@@ -10,6 +10,22 @@ namespace CommonUtil
         return abs(p0[0] - p1[0]) < epsilon && abs(p0[1] - p1[1]) < epsilon && abs(p0[2] - p1[2]) < epsilon;
     }
 
+    bool EpsilonContains(const std::vector<vtkVector3d>& points, const double point[3], const double epsilon)
+    {
+        for(const auto& p: points)
+        {
+            if(abs(p[0] - point[0]) < epsilon && abs(p[1] - point[1]) < epsilon && abs(p[2] - point[2]) < epsilon)
+                return true;
+        }
+
+        return false;
+    }
+
+    bool EpsilonContains(const std::vector<vtkVector3d>& points, const vtkVector3d& point, const double epsilon)
+    {
+        return EpsilonContains(points, point.GetData(), epsilon);
+    }
+
     vtkVector3d GetAverage(const std::vector<vtkVector3d>& data)
     {
         vtkVector3d avg(0, 0, 0);
