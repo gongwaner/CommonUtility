@@ -61,6 +61,11 @@ namespace MeshUtil
         appendTo = appendMesh->GetOutput();
     }
 
+    bool HasColorInfo(vtkPolyData* polyData)
+    {
+        return polyData->GetPointData()->GetScalars(Color::ColorArrayName.c_str());
+    }
+
     void EnableMeshColor(vtkSmartPointer<vtkPolyData> polyData, const vtkVector4d& initColor)
     {
         auto colorArray = vtkSmartPointer<vtkUnsignedCharArray>::New();
@@ -77,13 +82,10 @@ namespace MeshUtil
 
     void SetVertexColor(vtkSmartPointer<vtkPolyData> polyData, const int vid, const vtkVector4d& color)
     {
-        auto scalarArray = polyData->GetPointData()->GetScalars(Color::ColorArrayName.c_str());
-        if(!scalarArray)
-        {
+        if(!HasColorInfo(polyData))
             EnableMeshColor(polyData);
-            scalarArray = polyData->GetPointData()->GetScalars(Color::ColorArrayName.c_str());
-        }
 
+        auto scalarArray = polyData->GetPointData()->GetScalars(Color::ColorArrayName.c_str());
         auto colorPtr = static_cast<unsigned char*>(scalarArray->GetVoidPointer(0));
 
         const int cnt = 4;

@@ -4,7 +4,6 @@
 
 #include "../Mesh/GeometricObjectUtil.h"
 #include "../Mesh/MeshUtil.h"
-#include "../IO/IOUtil.h"
 
 
 namespace TestUtil
@@ -27,8 +26,12 @@ namespace TestUtil
 
     void AppendCube(vtkSmartPointer<vtkPolyData>& mesh, const vtkVector3d& pos, double size, const vtkVector4d& color)
     {
+        if(!MeshUtil::HasColorInfo(mesh))
+            MeshUtil::EnableMeshColor(mesh);
+
         auto cube = GeometricObjectUtil::GetCubePolyData(pos, size);
         MeshUtil::EnableMeshColor(cube, color);
+
         MeshUtil::AppendMesh(cube, mesh);
     }
 }

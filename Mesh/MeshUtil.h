@@ -31,6 +31,7 @@ namespace MeshUtil
      */
     void AppendMesh(vtkSmartPointer<vtkPolyData> appendFrom, vtkSmartPointer<vtkPolyData>& appendTo);
 
+    bool HasColorInfo(vtkPolyData* polyData);
     void EnableMeshColor(vtkSmartPointer<vtkPolyData> polyData, const vtkVector4d& initColor = Color::White);
     void SetVertexColor(vtkSmartPointer<vtkPolyData> polyData, int vid, const vtkVector4d& color);
 }
