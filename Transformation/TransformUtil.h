@@ -7,16 +7,18 @@
 class vtkMatrix3x3;
 class vtkMatrix4x4;
 class vtkPolyData;
+class vtkTransform;
 class vtkImageData;
 
 namespace TransformUtil
 {
     vtkSmartPointer<vtkMatrix3x3> GetRotationMatrix(double rotationAngleX, double rotationAngleY, double rotationAngleZ);
-
     vtkSmartPointer<vtkMatrix4x4> GetTransformationMatrix(const vtkVector3d& center, const vtkVector3d& translation, const vtkVector3d& rotation);
 
-    vtkVector3d GetTransformedPoint(const double point[3], vtkMatrix4x4* transformMat);
 
+    //point transformation
+
+    vtkVector3d GetTransformedPoint(const double point[3], vtkMatrix4x4* transformMat);
     vtkVector3d GetTransformedPoint(const vtkVector3d& point, vtkMatrix4x4* transformMat);
 
     /**
@@ -24,8 +26,10 @@ namespace TransformUtil
      */
     vtkVector3d GetTransformedPoint(const vtkVector3d& point, vtkMatrix4x4* rotMat, const vtkVector3d& rotCenter);
 
-    vtkVector3d GetTransformedVector(const double vec[3], vtkMatrix4x4* transformMat);
 
+    //vector transformation
+
+    vtkVector3d GetTransformedVector(const double vec[3], vtkMatrix4x4* transformMat);
     vtkVector3d GetTransformedVector(const vtkVector3d& vec, vtkMatrix4x4* transformMat);
 
     /**
@@ -34,7 +38,16 @@ namespace TransformUtil
      */
     vtkSmartPointer<vtkMatrix4x4> GetAlignVectorMatrix(const vtkVector3d& from, const vtkVector3d& to);
 
+    //mesh transformation
+
+    void TranslateMesh(vtkSmartPointer<vtkPolyData>& mesh, const vtkVector3d& translation);
+
+    vtkSmartPointer<vtkPolyData> GetTransformedMesh(vtkSmartPointer<vtkPolyData> mesh, vtkTransform* transform);
+    vtkSmartPointer<vtkPolyData> GetTranslatedMesh(vtkSmartPointer<vtkPolyData> mesh, const vtkVector3d& translation);
     vtkSmartPointer<vtkPolyData> GetTransformedMesh(vtkSmartPointer<vtkPolyData> mesh, vtkMatrix4x4* transformMat);
+
+
+    //image data transformation
 
     vtkSmartPointer<vtkImageData> GetTransformedImageData(vtkSmartPointer<vtkImageData> imageData, vtkMatrix4x4* transformMat, bool cubic = false);
 }

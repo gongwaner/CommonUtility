@@ -177,18 +177,39 @@ namespace TransformUtil
         return transform->GetMatrix();
     }
 
-    vtkSmartPointer<vtkPolyData> GetTransformedMesh(vtkSmartPointer<vtkPolyData> mesh, vtkMatrix4x4* transformMat)
+    void TranslateMesh(vtkSmartPointer<vtkPolyData>& mesh, const vtkVector3d& translation)
     {
         auto transform = vtkSmartPointer<vtkTransform>::New();
-        transform->SetMatrix(transformMat);
-        transform->Update();
+        transform->Translate(translation.GetData());
 
+        mesh = GetTransformedMesh(mesh, transform);
+    }
+
+    vtkSmartPointer<vtkPolyData> GetTransformedMesh(vtkSmartPointer<vtkPolyData> mesh, vtkTransform* transform)
+    {
         auto polyFilter = vtkSmartPointer<vtkTransformPolyDataFilter>::New();
         polyFilter->SetInputData(mesh);
         polyFilter->SetTransform(transform);
         polyFilter->Update();
 
         return polyFilter->GetOutput();
+    }
+
+    vtkSmartPointer<vtkPolyData> GetTranslatedMesh(vtkSmartPointer<vtkPolyData> mesh, const vtkVector3d& translation)
+    {
+        auto transform = vtkSmartPointer<vtkTransform>::New();
+        transform->Translate(translation.GetData());
+
+        return GetTransformedMesh(mesh, transform);
+    }
+
+    vtkSmartPointer<vtkPolyData> GetTransformedMesh(vtkSmartPointer<vtkPolyData> mesh, vtkMatrix4x4* transformMat)
+    {
+        auto transform = vtkSmartPointer<vtkTransform>::New();
+        transform->SetMatrix(transformMat);
+        transform->Update();
+
+        return GetTransformedMesh(mesh, transform);
     }
 
     vtkSmartPointer<vtkImageData> GetTransformedImageData(vtkSmartPointer<vtkImageData> imageData, vtkMatrix4x4* transformMat, bool cubic)
