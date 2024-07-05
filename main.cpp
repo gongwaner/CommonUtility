@@ -6,9 +6,10 @@
 #include "IO/IOUtil.h"
 #include "Test/MeshFeatureTest.h"
 
+
 int main()
 {
-    auto cwd = std::filesystem::current_path();
+    const auto cwd = std::filesystem::current_path();
     printf("current working dir: %s\n", cwd.string().c_str());
 
     std::filesystem::path dataDir;
@@ -33,16 +34,15 @@ int main()
 
     auto inputFile = dataDir;
     inputFile = inputFile.append("lowerJaw.stl");
-    printf("reading %s\n", inputFile.string().c_str());
 
-
-    auto polyData = IOUtil::ReadMesh(inputFile.string().c_str());
     auto outDir = dataDir;
     outDir = outDir.append("output");
-    const auto outFile = outDir.append("testResult.ply");
-    std::cout << "outFile: " << outFile << std::endl;
 
-    MeshFeatureTest::WriteMeshMeanCurvatureFeature(polyData, outFile.string().c_str());
+    UnitTest::MeshFeatureTest meshFeatureTest;
+    meshFeatureTest.SetUp(inputFile.c_str(), outDir);
+    meshFeatureTest.TestMeanCurvatureFeature();
+    meshFeatureTest.TestGaussianCurvatureFeature();
+    meshFeatureTest.TestPCAFeature();
 
     return 0;
 }

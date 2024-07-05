@@ -3,6 +3,8 @@
 #include <vtkAppendPolyData.h>
 
 #include "../Mesh/GeometricObjectUtil.h"
+#include "../Mesh/MeshUtil.h"
+#include "../IO/IOUtil.h"
 
 
 namespace TestUtil
@@ -20,11 +22,13 @@ namespace TestUtil
     void AppendCube(vtkSmartPointer<vtkPolyData>& mesh, const vtkVector3d& pos, double size)
     {
         auto cube = GeometricObjectUtil::GetCubePolyData(pos, size);
-        auto appendMesh = vtkSmartPointer<vtkAppendPolyData>::New();
-        appendMesh->AddInputData(mesh);
-        appendMesh->AddInputData(cube);
-        appendMesh->Update();
+        MeshUtil::AppendMesh(cube, mesh);
+    }
 
-        mesh = appendMesh->GetOutput();
+    void AppendCube(vtkSmartPointer<vtkPolyData>& mesh, const vtkVector3d& pos, double size, const vtkVector4d& color)
+    {
+        auto cube = GeometricObjectUtil::GetCubePolyData(pos, size);
+        MeshUtil::EnableMeshColor(cube, color);
+        MeshUtil::AppendMesh(cube, mesh);
     }
 }

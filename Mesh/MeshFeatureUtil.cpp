@@ -25,7 +25,7 @@ namespace MeshFeatureUtil
         auto lut = vtkSmartPointer<vtkColorTransferFunction>::New();
         lut->SetColorSpaceToHSV();
 
-        // Use a color series to create a transfer function
+        //use a color series to create a transfer function
         auto numColors = colorSeries->GetNumberOfColors();
         auto interval = scalarRange[1] - scalarRange[0];
         const double scale = 1.0 / 255.0;
@@ -69,7 +69,7 @@ namespace MeshFeatureUtil
 
         for(int regionID = 0; regionID < componentCnt; ++regionID)
         {
-            // select the region to extract
+            //select the region to extract
             connectivityFilter->SetExtractionModeToSpecifiedRegions();
             connectivityFilter->AddSpecifiedRegion(regionID);
             connectivityFilter->Update();
@@ -90,41 +90,9 @@ namespace MeshFeatureUtil
         return componentVec;
     }
 
-    void EnableMeshColor(vtkSmartPointer<vtkPolyData> polyData, const vtkVector4d& initColor)
-    {
-        auto colorArray = vtkSmartPointer<vtkUnsignedCharArray>::New();
-        colorArray->SetNumberOfComponents(4);
-        colorArray->SetName(Color::ColorArrayName.c_str());
-
-        for(int i = 0; i < polyData->GetNumberOfPoints(); ++i)
-        {
-            colorArray->InsertNextTuple4(initColor[0], initColor[1], initColor[2], initColor[3]);
-        }
-
-        polyData->GetPointData()->AddArray(colorArray);
-    }
-
-    void SetVertexColor(vtkSmartPointer<vtkPolyData> polyData, const int vid, const vtkVector4d& color)
-    {
-        auto scalarArray = polyData->GetPointData()->GetScalars(Color::ColorArrayName.c_str());
-        if(!scalarArray)
-        {
-            EnableMeshColor(polyData);
-            scalarArray = polyData->GetPointData()->GetScalars(Color::ColorArrayName.c_str());
-        }
-
-        auto colorPtr = static_cast<unsigned char*>(scalarArray->GetVoidPointer(0));
-
-        const int cnt = 4;
-        for(int i = 0; i < cnt; ++i)
-            colorPtr[vid * cnt + i] = color[i];
-
-        polyData->GetPointData()->Modified();
-    }
-
     std::unordered_set<int> GetNeighborVids(vtkPolyData* polyData, const int vid)
     {
-        // get all cells that vertex 'id' is a part of
+        //get all cells that vertex 'id' is a part of
         auto cellIdList = vtkSmartPointer<vtkIdList>::New();
         polyData->GetPointCells(vid, cellIdList);
 
@@ -197,7 +165,6 @@ namespace MeshFeatureUtil
         double scalarRange[2]{clampMin, clampMax};
         auto lut = GetLookUpTable(colorScheme, scalarRange);
 
-        // Create a mapper and actor.
         auto actor = vtkSmartPointer<vtkActor>::New();
         {
             auto mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
@@ -210,7 +177,6 @@ namespace MeshFeatureUtil
             actor->SetMapper(mapper);
         }
 
-        // Create a scalar bar.
         auto scalarBar = vtkSmartPointer<vtkScalarBarActor>::New();
         scalarBar->SetLookupTable(lut);
         scalarBar->SetTitle(scalarID);
@@ -219,7 +185,6 @@ namespace MeshFeatureUtil
         scalarBar->SetMaximumWidthInPixels(windowWidth / 8);
         scalarBar->SetMaximumHeightInPixels(windowHeight / 3);
 
-        // Create a renderer, render window, and interactor.
         auto renderer = vtkSmartPointer<vtkRenderer>::New();
         auto renWin = vtkSmartPointer<vtkRenderWindow>::New();
         renWin->AddRenderer(renderer);
@@ -228,16 +193,15 @@ namespace MeshFeatureUtil
 
         auto iRen = vtkSmartPointer<vtkRenderWindowInteractor>::New();
         iRen->SetRenderWindow(renWin);
-        // Important: The interactor must be set prior to enabling the widget.
+        //the interactor must be set prior to enabling the widget.
         iRen->SetRenderWindow(renWin);
 
-        // Add the actors to the scene.
+        //add the actors to the scene
         auto colors = vtkSmartPointer<vtkNamedColors>::New();
         renderer->AddActor(actor);
         renderer->AddActor2D(scalarBar);
         renderer->SetBackground(colors->GetColor3d("DarkSlateGray").GetData());
 
-        // Render and interact.
         renWin->Render();
         iRen->Start();
     }

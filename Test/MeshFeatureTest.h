@@ -1,9 +1,26 @@
+#pragma once
+
+#include <vtkSmartPointer.h>
+
 class vtkPolyData;
 
-namespace MeshFeatureTest
+namespace UnitTest
 {
-    void WriteMeshMeanCurvatureFeature(vtkPolyData* polydata, const char* outDir);
-    void WriteMeshPCAFeature(vtkPolyData* polydata, const char* outDir);
+    class MeshFeatureTest
+    {
+    public:
+        /**
+         * Setup of the mesh feature test, given input file directory and output folder directory
+         */
+        void SetUp(const char* inputFile, const std::filesystem::path& outputDir);
+
+        void TestMeanCurvatureFeature();
+        void TestGaussianCurvatureFeature();
+        void TestPCAFeature();
+
+
+    private:
+        vtkSmartPointer<vtkPolyData> mesh;
+        std::filesystem::path outputDir;
+    };
 }
-
-

@@ -7,25 +7,47 @@
 #include "../IO/IOUtil.h"
 
 
-namespace MeshFeatureTest
+namespace UnitTest
 {
-    void WriteMeshMeanCurvatureFeature(vtkPolyData* polydata, const char* outDir)
+    void MeshFeatureTest::SetUp(const char* inputFile, const std::filesystem::path& outputDir)
     {
-        auto meanCurvature = MeshFeature::GetMeanCurvature(polydata);
-        MeshFeatureUtil::ClampVector(meanCurvature, -1.0, 0.5);
-
-        MeshFeatureUtil::ColorMapping(polydata, meanCurvature);
-
-        IOUtil::WriteColorMesh(outDir, polydata);
+        mesh = IOUtil::ReadMesh(inputFile);
+        this->outputDir = outputDir;
     }
 
-    void WriteMeshPCAFeature(vtkPolyData* polydata, const char* outDir)
+    void MeshFeatureTest::TestMeanCurvatureFeature()
     {
-        auto meanCurvature = MeshFeature::GetPCAFeature(polydata, 3);
+        auto meanCurvature = MeshFeature::GetMeanCurvature(mesh);
+        MeshFeatureUtil::ClampVector(meanCurvature, -1.0, 0.5);
+
+        MeshFeatureUtil::ColorMapping(mesh, meanCurvature);
+
+        auto outFile = outputDir;
+        outFile.append("mean_curvature_feature.ply");
+        IOUtil::WriteColorMesh(outFile.string().c_str(), mesh);
+    }
+
+    void MeshFeatureTest::TestGaussianCurvatureFeature()
+    {
+        auto meanCurvature = MeshFeature::GetGaussianCurvature(mesh);
+        MeshFeatureUtil::ClampVector(meanCurvature, -1.0, 0.5);
+
+        MeshFeatureUtil::ColorMapping(mesh, meanCurvature);
+
+        auto outFile = outputDir;
+        outFile.append("gaussian_curvature_feature.ply");
+        IOUtil::WriteColorMesh(outFile.string().c_str(), mesh);
+    }
+
+    void MeshFeatureTest::TestPCAFeature()
+    {
+        auto meanCurvature = MeshFeature::GetPCAFeature(mesh, 3);
         MeshFeatureUtil::ClampVector(meanCurvature, 50.0, 300.0);
 
-        MeshFeatureUtil::ColorMapping(polydata, meanCurvature);
+        MeshFeatureUtil::ColorMapping(mesh, meanCurvature);
 
-        IOUtil::WriteColorMesh(outDir, polydata);
+        auto outFile = outputDir;
+        outFile.append("pca_feature.ply");
+        IOUtil::WriteColorMesh(outFile.string().c_str(), mesh);
     }
 }

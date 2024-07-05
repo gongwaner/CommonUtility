@@ -32,10 +32,6 @@ namespace MeshFeatureUtil
      */
     std::vector<vtkSmartPointer<vtkPolyData>> GetAllComponents(vtkSmartPointer<vtkPolyData> polyData, int minCellsCnt);
 
-    void EnableMeshColor(vtkSmartPointer<vtkPolyData> polyData, const vtkVector4d& initColor = Color::White);
-
-    void SetVertexColor(vtkSmartPointer<vtkPolyData> polyData, int vid, const vtkVector4d& color);
-
     /**
      * Extract the topological neighbors of given vid
      * @return vector of neighbor vids as std::unordered_set
