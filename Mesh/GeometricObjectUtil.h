@@ -23,7 +23,7 @@ namespace GeometricObjectUtil
     vtkSmartPointer<vtkPolyData> GetCubePolyData(const vtkVector3d& pos, double size);
 
     /**
-     * given plane center and normal, return its axis X and Y
+     * Given plane center and normal, return its axis X and Y
      */
     void GetPlaneAxes(double center[3], double normal[3], double axisX[3], double axisY[3]);
 }

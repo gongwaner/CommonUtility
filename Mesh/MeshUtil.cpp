@@ -6,6 +6,7 @@
 #include <vtkPolyDataConnectivityFilter.h>
 #include <vtkAppendPolyData.h>
 #include <vtkPointData.h>
+#include <vtkTriangle.h>
 
 #include <queue>
 
@@ -218,5 +219,36 @@ namespace MeshUtil
             colorPtr[vid * cnt + i] = color[i];
 
         polyData->GetPointData()->Modified();
+    }
+
+    vtkSmartPointer<vtkPolyData> GetPolyData(vtkPoints* points, vtkCellArray* cells)
+    {
+        auto mesh = vtkSmartPointer<vtkPolyData>::New();
+        mesh->SetPoints(points);
+        mesh->SetPolys(cells);
+
+        return mesh;
+    }
+
+    vtkSmartPointer<vtkPolyData> GetPolyData(const std::vector<vtkVector3d>& points, vtkSmartPointer<vtkCellArray> cells)
+    {
+        auto pointsArray = vtkSmartPointer<vtkPoints>::New();
+        for(const auto& point: points)
+            pointsArray->InsertNextPoint(point.GetData());
+
+        return GetPolyData(pointsArray, cells);
+    }
+
+    vtkSmartPointer<vtkPolyData> GetPolyData(const std::vector<vtkVector3d>& points, const std::vector<vtkSmartPointer<vtkTriangle>>& triangles)
+    {
+        auto pointsArray = vtkSmartPointer<vtkPoints>::New();
+        for(const auto& point: points)
+            pointsArray->InsertNextPoint(point.GetData());
+
+        auto cells = vtkSmartPointer<vtkCellArray>::New();
+        for(const auto& tri: triangles)
+            cells->InsertNextCell(tri);
+
+        return GetPolyData(pointsArray, cells);
     }
 }

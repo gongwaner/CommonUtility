@@ -9,6 +9,9 @@
 
 class vtkPolyData;
 class vtkOBBTree;
+class vtkPoints;
+class vtkCellArray;
+class vtkTriangle;
 
 namespace MeshUtil
 {
@@ -16,7 +19,6 @@ namespace MeshUtil
      * Print mesh vertices and cells count
      */
     void PrintMeshInfo(vtkPolyData* polyData);
-
     void PrintMeshInfo(const std::string& meshName, vtkPolyData* polyData);
 
     /**
@@ -64,4 +66,11 @@ namespace MeshUtil
     void EnableMeshColor(vtkSmartPointer<vtkPolyData> polyData, const vtkVector4d& initColor = Color::White);
 
     void SetVertexColor(vtkSmartPointer<vtkPolyData> polyData, int vid, const vtkVector4d& color);
+
+    /**
+     * Given points and cells topology, return the mesh
+     */
+    vtkSmartPointer<vtkPolyData> GetPolyData(vtkPoints* points, vtkCellArray* cells);
+    vtkSmartPointer<vtkPolyData> GetPolyData(const std::vector<vtkVector3d>& points, vtkSmartPointer<vtkCellArray> cells);
+    vtkSmartPointer<vtkPolyData> GetPolyData(const std::vector<vtkVector3d>& points, const std::vector<vtkSmartPointer<vtkTriangle>>& triangles);
 }

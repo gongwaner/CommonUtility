@@ -1,10 +1,21 @@
 #include "PolygonUtil.h"
 
 #include <vtkTriangle.h>
+#include <vtkVectorOperators.h>
 
 
 namespace PolygonUtil
 {
+    vtkVector3d GetTriangleNormal(const vtkVector3d& A, const vtkVector3d& B, const vtkVector3d& C)
+    {
+        vtkVector3d AB = B - A;
+        vtkVector3d AC = C - A;
+
+        vtkVector3d normal = AB.Cross(AC);
+
+        return normal.Normalized();
+    }
+
     vtkVector3d GetPolygonNormal(const std::vector<vtkVector3d>& polygonPoints)
     {
         vtkVector3d normal{0, 0, 0};
@@ -29,25 +40,30 @@ namespace PolygonUtil
         return normal.Normalized();
     }
 
-    vtkSmartPointer<vtkTriangle> GetTriangle(const std::vector<vtkVector3d>& points, const int vid0, const int vid1, const int vid2,
-                                             const vtkVector3d& planeNormal)
+    vtkSmartPointer<vtkTriangle> GetTriangle(int vid0, int vid1, int vid2)
     {
-        double triNormal[3];
-        vtkTriangle::ComputeNormal(points[vid0].GetData(), points[vid1].GetData(), points[vid2].GetData(), triNormal);
-
         auto triangle = vtkSmartPointer<vtkTriangle>::New();
-        if(vtkVector3d(triNormal).Dot(planeNormal) < 0)
-        {
-            triangle->GetPointIds()->SetId(0, vid0);
-            triangle->GetPointIds()->SetId(1, vid1);
-            triangle->GetPointIds()->SetId(2, vid2);
-        }
+
+        triangle->GetPointIds()->SetId(0, vid0);
+        triangle->GetPointIds()->SetId(1, vid1);
+        triangle->GetPointIds()->SetId(2, vid2);
+
+        return triangle;
+    }
+
+    vtkSmartPointer<vtkTriangle> GetTriangle(const std::vector<vtkVector3d>& polygonPoints, const int vid0, const int vid1, const int vid2,
+                                             const vtkVector3d& polygonNormal)
+    {
+        if(polygonPoints.size() < 3)
+            throw std::runtime_error("PolygonUtil::GetTriangle(). Error: polygonPoints.size() should be > 3!");
+
+        const auto triNormal = GetTriangleNormal(polygonPoints[vid0], polygonPoints[vid1], polygonPoints[vid2]);
+
+        vtkSmartPointer<vtkTriangle> triangle;
+        if(triNormal.Dot(polygonNormal) < 0)
+            triangle = GetTriangle(vid0, vid1, vid2);
         else
-        {
-            triangle->GetPointIds()->SetId(0, vid2);
-            triangle->GetPointIds()->SetId(1, vid1);
-            triangle->GetPointIds()->SetId(2, vid0);
-        }
+            triangle = GetTriangle(vid2, vid1, vid0);
 
         return triangle;
     }
