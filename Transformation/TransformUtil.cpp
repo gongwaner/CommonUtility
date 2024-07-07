@@ -115,6 +115,22 @@ namespace TransformUtil
         return transformationMatrix;
     }
 
+    vtkSmartPointer<vtkMatrix4x4> GetTransformationMatrix(const vtkVector3d& rotCenter, vtkMatrix4x4* rotMat)
+    {
+        auto mat1 = vtkSmartPointer<vtkMatrix4x4>::New();
+        auto mat2 = vtkSmartPointer<vtkMatrix4x4>::New();
+        for(int i = 0; i < 3; ++i)
+        {
+            mat1->SetElement(i, 3, rotCenter[i]);
+            mat2->SetElement(i, 3, -rotCenter[i]);
+        }
+
+        vtkMatrix4x4::Multiply4x4(mat1, rotMat, mat1);
+        vtkMatrix4x4::Multiply4x4(mat1, mat2, mat1);
+
+        return mat1;
+    }
+
     vtkVector3d GetTransformedPoint(const double point[3], vtkMatrix4x4* transformMat)
     {
         double in[4]{point[0], point[1], point[2], 1};
@@ -129,22 +145,12 @@ namespace TransformUtil
         return GetTransformedPoint(point.GetData(), transformMat);
     }
 
-
     vtkVector3d GetTransformedPoint(const vtkVector3d& point, vtkMatrix4x4* rotMat, const vtkVector3d& rotCenter)
     {
-        auto mat1 = vtkSmartPointer<vtkMatrix4x4>::New();
-        auto mat2 = vtkSmartPointer<vtkMatrix4x4>::New();
-        for(int i = 0; i < 3; ++i)
-        {
-            mat1->SetElement(i, 3, rotCenter[i]);
-            mat2->SetElement(i, 3, -rotCenter[i]);
-        }
-
-        vtkMatrix4x4::Multiply4x4(mat1, rotMat, mat1);
-        vtkMatrix4x4::Multiply4x4(mat1, mat2, mat1);
+        auto transformMat = GetTransformationMatrix(rotCenter, rotMat);
 
         double inputPoint[4]{point[0], point[1], point[2], 1};
-        mat1->MultiplyPoint(inputPoint, inputPoint);
+        transformMat->MultiplyPoint(inputPoint, inputPoint);
 
         return vtkVector3d(inputPoint);
     }
@@ -185,14 +191,13 @@ namespace TransformUtil
         mesh = GetTransformedMesh(mesh, transform);
     }
 
-    vtkSmartPointer<vtkPolyData> GetTransformedMesh(vtkSmartPointer<vtkPolyData> mesh, vtkTransform* transform)
+    void TransformMesh(vtkSmartPointer<vtkPolyData>& mesh, vtkMatrix4x4* transformMat)
     {
-        auto polyFilter = vtkSmartPointer<vtkTransformPolyDataFilter>::New();
-        polyFilter->SetInputData(mesh);
-        polyFilter->SetTransform(transform);
-        polyFilter->Update();
+        auto transform = vtkSmartPointer<vtkTransform>::New();
+        transform->SetMatrix(transformMat);
+        transform->Update();
 
-        return polyFilter->GetOutput();
+        mesh = GetTransformedMesh(mesh, transform);
     }
 
     vtkSmartPointer<vtkPolyData> GetTranslatedMesh(vtkSmartPointer<vtkPolyData> mesh, const vtkVector3d& translation)
@@ -201,6 +206,16 @@ namespace TransformUtil
         transform->Translate(translation.GetData());
 
         return GetTransformedMesh(mesh, transform);
+    }
+
+    vtkSmartPointer<vtkPolyData> GetTransformedMesh(vtkSmartPointer<vtkPolyData> mesh, vtkTransform* transform)
+    {
+        auto polyFilter = vtkSmartPointer<vtkTransformPolyDataFilter>::New();
+        polyFilter->SetInputData(mesh);
+        polyFilter->SetTransform(transform);
+        polyFilter->Update();
+
+        return polyFilter->GetOutput();
     }
 
     vtkSmartPointer<vtkPolyData> GetTransformedMesh(vtkSmartPointer<vtkPolyData> mesh, vtkMatrix4x4* transformMat)

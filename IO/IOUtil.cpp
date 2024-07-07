@@ -18,6 +18,7 @@
 #include <filesystem>
 
 #include "../Common/Color.h"
+#include "../Mesh/MeshUtil.h"
 
 
 namespace IOUtil
@@ -149,7 +150,13 @@ namespace IOUtil
     {
         if(GetFileExtension(fileDir) != ".ply")
         {
-            std::cerr << "ERROR: wrong extension. Should be .ply" << std::endl;
+            std::cerr << "WriteColorMesh(). ERROR: wrong extension. Should be .ply" << std::endl;
+            return;
+        }
+
+        if(!MeshUtil::HasColorInfo(polyData))
+        {
+            std::cerr << "WriteColorMesh(). ERROR: polydata does not contain any color information. Use WriteMesh() instead." << std::endl;
             return;
         }
 

@@ -2,11 +2,15 @@
 
 #include <vtkSphere.h>
 #include <vtkSphereSource.h>
+#include <vtkVertexGlyphFilter.h>
 #include <vtkLineSource.h>
 #include <vtkVectorOperators.h>
 #include <vtkPlaneSource.h>
 #include <vtkCubeSource.h>
-#include <vtkVertexGlyphFilter.h>
+#include <vtkCylinderSource.h>
+#include <vtkMatrix4x4.h>
+
+#include "../Transformation/TransformUtil.h"
 
 
 namespace GeometricObjectUtil
@@ -67,6 +71,21 @@ namespace GeometricObjectUtil
         return GetLinePolyData(start, start + dir * length);
     }
 
+    vtkSmartPointer<vtkPolyData> GetLineMesh(const vtkVector3d& lineStart, const vtkVector3d& lineEnd, const double radius)
+    {
+        const auto center = (lineStart + lineEnd) * 0.5;
+        const auto lineLength = (lineEnd - lineStart).Norm();
+
+        auto line = GeometricObjectUtil::GetCylinderPolyData(center, radius, lineLength, 10);//random resolution
+
+        //the returned cylinder mesh is aligned with global Y. rotate it to align with the line
+        auto rotationMat = TransformUtil::GetAlignVectorMatrix({0, 1, 0}, lineEnd - lineStart);
+        auto transformMat = TransformUtil::GetTransformationMatrix(center, rotationMat);
+        TransformUtil::TransformMesh(line, transformMat);
+
+        return line;
+    }
+
     vtkSmartPointer<vtkPolyData> GetPlanePolyData(double center[3], double normal[3], int xResolution, int yResolution, int width, int height)
     {
         auto planeSource = vtkSmartPointer<vtkPlaneSource>::New();
@@ -115,6 +134,19 @@ namespace GeometricObjectUtil
         cube->Update();
 
         return cube->GetOutput();
+    }
+
+    vtkSmartPointer<vtkPolyData> GetCylinderPolyData(const vtkVector3d& center, const double radius, const double height, const int resolution)
+    {
+        auto cylinderSource = vtkSmartPointer<vtkCylinderSource>::New();
+        cylinderSource->SetCenter(center.GetData());
+        cylinderSource->SetRadius(radius);
+        cylinderSource->SetHeight(height);
+        cylinderSource->SetResolution(resolution);
+
+        cylinderSource->Update();
+
+        return cylinderSource->GetOutput();
     }
 
     void GetPlaneAxes(double center[3], double normal[3], double axisX[3], double axisY[3])

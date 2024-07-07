@@ -2,6 +2,8 @@
 
 #include <vtkVector.h>
 
+#include <optional>
+
 
 class vtkTriangle;
 class vtkPolyData;
@@ -29,4 +31,23 @@ namespace PolygonUtil
      */
     vtkSmartPointer<vtkTriangle> GetTriangle(const std::vector<vtkVector3d>& polygonPoints, int vid0, int vid1, int vid2,
                                              const vtkVector3d& polygonNormal);
+
+    /**
+     * Check whether 2 lines intersect or not.
+     * Note: this function does not calculate intersection point.
+     * By default, cases where intersection point is on either line or shared by both lines(common end point)
+     * are counted as has intersection. If the latter is not desired, set  'commonEndpointAsIntersection' to false.
+     */
+    bool LinesIntersect(const vtkVector3d& line1Start, const vtkVector3d& line1End,
+                        const vtkVector3d& line2Start, const vtkVector3d& line2End,
+                        bool commonEndpointAsIntersection = true, double epsilon = 1e-6);
+
+    bool LinesIntersect(const std::pair<vtkVector3d, vtkVector3d>& line1, const std::pair<vtkVector3d, vtkVector3d>& line2,
+                        bool commonEndpointAsIntersection = true, double epsilon = 1e-6);
+
+    /**
+     * Calculate the intersection points of 2 lines
+     */
+    std::optional<vtkVector3d> GetLinesIntersection(const vtkVector3d& line1Start, const vtkVector3d& line1End,
+                                                    const vtkVector3d& line2Start, const vtkVector3d& line2End, double epsilon = 1e-6);
 }

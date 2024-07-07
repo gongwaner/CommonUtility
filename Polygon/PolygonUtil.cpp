@@ -2,6 +2,7 @@
 
 #include <vtkTriangle.h>
 #include <vtkVectorOperators.h>
+#include <vtkLine.h>
 
 
 namespace PolygonUtil
@@ -66,5 +67,47 @@ namespace PolygonUtil
             triangle = GetTriangle(vid2, vid1, vid0);
 
         return triangle;
+    }
+
+    bool LinesIntersect(const vtkVector3d& line1Start, const vtkVector3d& line1End,
+                        const vtkVector3d& line2Start, const vtkVector3d& line2End,
+                        const bool commonEndpointAsIntersection, const double epsilon)
+    {
+        double u, v;
+        int result = vtkLine::Intersection(line1Start.GetData(), line1End.GetData(), line2Start.GetData(), line2End.GetData(), u, v);
+
+        if(result == vtkLine::IntersectionType::NoIntersect)
+            return false;
+
+        if(commonEndpointAsIntersection)
+            return true;
+
+        if(u > epsilon && u < 1 && v > epsilon && v < 1)//not doing u - 1 < epsilon here because when u==1.0 should return false
+            return true;
+
+        return false;
+    }
+
+    bool LinesIntersect(const std::pair<vtkVector3d, vtkVector3d>& line1, const std::pair<vtkVector3d, vtkVector3d>& line2,
+                        const bool commonEndpointAsIntersection, const double epsilon)
+    {
+        return LinesIntersect(line1.first, line1.second, line2.first, line2.second, commonEndpointAsIntersection, epsilon);
+    }
+
+    std::optional<vtkVector3d> GetLineIntersection(const vtkVector3d& line1Start, const vtkVector3d& line1End,
+                                                   const vtkVector3d& line2Start, const vtkVector3d& line2End, const double epsilon)
+    {
+        double u, v;
+        int result = vtkLine::Intersection(line1Start.GetData(), line1End.GetData(), line2Start.GetData(), line2End.GetData(), u, v);
+
+        if(result == vtkLine::IntersectionType::NoIntersect)
+            return std::nullopt;
+
+        if(u >= (0 - epsilon) && u <= (1 + epsilon) && v >= (0 - epsilon) && v <= (1 + epsilon))//u, v falls into [0,1]
+        {
+            return line1Start + u * (line1End - line1Start);
+        }
+
+        return std::nullopt;
     }
 }
