@@ -17,6 +17,8 @@
 #include <iostream>
 #include <filesystem>
 
+#include "../Common/Color.h"
+
 
 namespace IOUtil
 {
@@ -157,7 +159,7 @@ namespace IOUtil
         auto plyWriter = vtkSmartPointer<vtkPLYWriter>::New();
         plyWriter->SetFileName(fileDir);
         plyWriter->SetInputData(polyData);
-        plyWriter->SetArrayName("Colors"); //set colors
+        plyWriter->SetArrayName(Color::ColorArrayName.c_str()); //set colors
         plyWriter->Write();
 
         std::cout << "Saved colored polydata to " << fileDir << std::endl;

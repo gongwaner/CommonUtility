@@ -41,6 +41,18 @@ namespace MeshUtil
    */
     std::vector<int> GetNRingNeighbors(vtkPolyData* polyData, int vid, int nring);
 
+    /**
+     * Return boundary vertices ids of given mesh.
+     * Note: the returned result is a list of UNSORTED vertices ids.
+     */
+    std::vector<int> GetUnsortedBoundaryVids(vtkPolyData* polyData);
+
+    /*
+     * Return boundary vertices ids in a loop of the given mesh.
+     * The returned result is sorted.
+     */
+    std::vector<int> GetBoundaryLoopVids(vtkPolyData* polyData);
+
     vtkSmartPointer<vtkPolyData> GetLargestComponent(vtkPolyData* polyData);
 
     /**

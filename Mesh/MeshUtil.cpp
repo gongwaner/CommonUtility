@@ -7,8 +7,11 @@
 #include <vtkAppendPolyData.h>
 #include <vtkPointData.h>
 #include <vtkTriangle.h>
+#include <vtkIdFilter.h>
+#include <vtkFeatureEdges.h>
 
 #include <queue>
+#include <stack>
 
 
 namespace MeshUtil
@@ -116,6 +119,75 @@ namespace MeshUtil
         }
 
         return nringNeighbors;
+    }
+
+    std::vector<int> GetUnsortedBoundaryVids(vtkPolyData* polyData)
+    {
+        const auto arrayName = "ids";
+
+        auto idFilter = vtkSmartPointer<vtkIdFilter>::New();
+        idFilter->SetInputData(polyData);
+        idFilter->SetPointIds(true);
+        idFilter->SetCellIds(false);
+        idFilter->SetPointIdsArrayName(arrayName);
+        idFilter->SetCellIdsArrayName(arrayName);
+        idFilter->Update();
+
+        auto edges = vtkSmartPointer<vtkFeatureEdges>::New();
+        edges->SetInputData(idFilter->GetOutput());
+        edges->BoundaryEdgesOn();
+        edges->ManifoldEdgesOff();
+        edges->NonManifoldEdgesOff();
+        edges->FeatureEdgesOff();
+        edges->Update();
+
+        auto array = edges->GetOutput()->GetPointData()->GetArray(arrayName);
+
+        std::vector<int> boundaryVids(array->GetNumberOfValues());
+        for(int i = 0; i < array->GetNumberOfValues(); ++i)
+        {
+            boundaryVids[i] = array->GetTuple1(i);
+        }
+
+        return boundaryVids;
+    }
+
+    std::vector<int> GetBoundaryLoopVids(vtkPolyData* polyData)
+    {
+        const auto unsortedBoundaryVids = GetUnsortedBoundaryVids(polyData);
+
+        const auto vertCnt = polyData->GetNumberOfPoints();
+        std::vector<bool> visited(vertCnt, false);
+        std::vector<bool> isBoundary(vertCnt, false);
+
+        for(const auto vid: unsortedBoundaryVids)
+            isBoundary[vid] = true;
+
+        std::vector<int> dfsResult;
+        std::stack<int> stack;
+
+        const auto seed = unsortedBoundaryVids[0];
+        stack.push(seed);
+        visited[seed] = true;
+
+        while(!stack.empty())
+        {
+            const auto vid = stack.top();
+            dfsResult.push_back(vid);
+            stack.pop();
+
+            auto neighbors = GetNeighborVids(polyData, vid);
+            for(auto neighbor: neighbors)
+            {
+                if(!visited[neighbor] && isBoundary[neighbor])
+                {
+                    stack.push(neighbor);
+                    visited[neighbor] = true;
+                }
+            }
+        }
+
+        return dfsResult;
     }
 
     vtkSmartPointer<vtkPolyData> GetLargestComponent(vtkPolyData* polyData)
