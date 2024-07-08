@@ -82,10 +82,13 @@ namespace PolygonUtil
         if(commonEndpointAsIntersection)
             return true;
 
-        if(u > epsilon && u < 1 && v > epsilon && v < 1)//not doing u - 1 < epsilon here because when u==1.0 should return false
-            return true;
+        if(abs(u) < epsilon || abs(v) < epsilon) //u or v == 0
+            return false;
 
-        return false;
+        if(abs(u - 1) < epsilon || abs(v - 1) < epsilon) //u or v == 1
+            return false;
+
+        return true;
     }
 
     bool LinesIntersect(const std::pair<vtkVector3d, vtkVector3d>& line1, const std::pair<vtkVector3d, vtkVector3d>& line2,
@@ -103,11 +106,7 @@ namespace PolygonUtil
         if(result == vtkLine::IntersectionType::NoIntersect)
             return std::nullopt;
 
-        if(u >= (0 - epsilon) && u <= (1 + epsilon) && v >= (0 - epsilon) && v <= (1 + epsilon))//u, v falls into [0,1]
-        {
-            return line1Start + u * (line1End - line1Start);
-        }
-
-        return std::nullopt;
+        //either intersect or on line
+        return line1Start + u * (line1End - line1Start);
     }
 }
