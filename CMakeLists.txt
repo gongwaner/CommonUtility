@@ -51,7 +51,6 @@ add_executable(${PROJECT_NAME} MACOSX_BUNDLE main.cpp
         Mesh/GeometricObjectUtil.cpp
         Polygon/PolygonUtil.cpp
         Common/CommonUtil.cpp
-        Polygon/OptimalPolygonTriangulation.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${VTK_LIBRARIES})
