@@ -2,11 +2,16 @@
 
 #include <vtkVector.h>
 
+#include <filesystem>
+
 
 class vtkPolyData;
 
 namespace TestUtil
 {
+    std::filesystem::path GetDataDir();
+    std::filesystem::path GetOutputDir();
+
     //print functions
     void Print(const std::string& msg, const double vec[3]);
     void Print(const std::string& msg, const vtkVector3d& vec);
@@ -34,5 +39,3 @@ namespace TestUtil
      */
     void AppendLine(vtkSmartPointer<vtkPolyData>& mesh, const std::pair<vtkVector3d, vtkVector3d>& line, double radius, const vtkVector4d& color);
 }
-
-
