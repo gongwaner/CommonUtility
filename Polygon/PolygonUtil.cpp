@@ -41,7 +41,7 @@ namespace PolygonUtil
         return normal.Normalized();
     }
 
-    vtkSmartPointer<vtkTriangle> GetTriangle(int vid0, int vid1, int vid2)
+    vtkSmartPointer<vtkTriangle> GetTriangle(const int vid0, const int vid1, const int vid2)
     {
         auto triangle = vtkSmartPointer<vtkTriangle>::New();
 
