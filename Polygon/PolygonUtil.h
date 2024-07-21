@@ -33,6 +33,11 @@ namespace PolygonUtil
                                              const vtkVector3d& polygonNormal);
 
     /**
+     * Check if given point is within triangle ABC.
+     */
+    bool PointInTriangle(const vtkVector3d& point, const vtkVector3d& A, const vtkVector3d& B, const vtkVector3d& C, double epsilon = 1e-6);
+
+    /**
      * Check whether 2 lines intersect or not.
      * Note: this function does not calculate intersection point.
      * By default, cases where intersection point is on either line or shared by both lines(common end point)

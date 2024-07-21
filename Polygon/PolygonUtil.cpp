@@ -69,6 +69,27 @@ namespace PolygonUtil
         return triangle;
     }
 
+    bool PointInTriangle(const vtkVector3d& point, const vtkVector3d& A, const vtkVector3d& B, const vtkVector3d& C, const double epsilon)
+    {
+        const auto v0 = B - A;
+        const auto v1 = C - A;
+        const auto v2 = point - A;
+
+        // Compute dot products
+        const auto dot00 = v0.Dot(v0);
+        const auto dot01 = v0.Dot(v1);
+        const auto dot02 = v0.Dot(v2);
+        const auto dot11 = v1.Dot(v1);
+        const auto dot12 = v1.Dot(v2);
+
+        //compute barycentric coordinates
+        const auto invDenom = 1.0 / (dot00 * dot11 - dot01 * dot01);
+        const auto u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+        const auto v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+
+        return (u >= -epsilon) && (v >= -epsilon) && (u + v < 1);
+    }
+
     bool LinesIntersect(const vtkVector3d& line1Start, const vtkVector3d& line1End,
                         const vtkVector3d& line2Start, const vtkVector3d& line2End,
                         const bool commonEndpointAsIntersection, const double epsilon)

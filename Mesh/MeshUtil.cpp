@@ -2,6 +2,7 @@
 
 #include <vtkPolyData.h>
 #include <vtkOBBTree.h>
+#include <vtkBoundingBox.h>
 #include <vtkVectorOperators.h>
 #include <vtkPolyDataConnectivityFilter.h>
 #include <vtkAppendPolyData.h>
@@ -44,6 +45,47 @@ namespace MeshUtil
         obbTree->BuildLocator();
 
         return obbTree;
+    }
+
+    std::vector<vtkVector3d> GetTriPoints(vtkPolyData* mesh, const int tid)
+    {
+        std::vector<vtkVector3d> triPoints;
+
+        auto pointIdList = vtkSmartPointer<vtkIdList>::New();
+        mesh->GetCellPoints(tid, pointIdList);
+
+        for(int i = 0; i < pointIdList->GetNumberOfIds(); i++)
+            triPoints.push_back(vtkVector3d(mesh->GetPoint(pointIdList->GetId(i))));
+
+        return triPoints;
+    }
+
+    vtkBoundingBox GetTriBounds(vtkSmartPointer<vtkPolyData> mesh, const int tid)
+    {
+        vtkBoundingBox boundingBox;
+        auto pointIdList = vtkSmartPointer<vtkIdList>::New();
+        mesh->GetCellPoints(tid, pointIdList);
+
+        for(int i = 0; i < pointIdList->GetNumberOfIds(); i++)
+            boundingBox.AddPoint(mesh->GetPoint(pointIdList->GetId(i)));
+
+        return boundingBox;
+    }
+
+    vtkBoundingBox GetTrisBounds(vtkPolyData* mesh, const std::vector<int>& tids)
+    {
+        vtkBoundingBox boundingBox;
+
+        for(const auto tid: tids)
+        {
+            auto pointIdList = vtkSmartPointer<vtkIdList>::New();
+            mesh->GetCellPoints(tid, pointIdList);
+
+            for(int i = 0; i < pointIdList->GetNumberOfIds(); i++)
+                boundingBox.AddPoint(mesh->GetPoint(pointIdList->GetId(i)));
+        }
+
+        return boundingBox;
     }
 
     vtkVector3d GetCellCenter(vtkPolyData* polyData, const vtkIdType cellID)

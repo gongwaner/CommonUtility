@@ -19,8 +19,8 @@ find_package(VTK COMPONENTS
         IOLegacy
         IOPLY
         IOXML
-        InteractionStyle
         InteractionImage
+        InteractionStyle
         InteractionWidgets
         RenderingAnnotation
         RenderingContextOpenGL2
@@ -36,21 +36,22 @@ endif ()
 
 # Prevent a "command line is too long" failure in Windows.
 set(CMAKE_NINJA_FORCE_RESPONSE_FILE "ON" CACHE BOOL "Force Ninja to use response files.")
+
 add_executable(${PROJECT_NAME} MACOSX_BUNDLE main.cpp
+        CollisionDetection/CollisionDetectionUtil.cpp
+        CollisionDetection/TriTriIntersection.cpp
         Common/Color.h
+        Common/CommonUtil.cpp
         IO/IOUtil.cpp
+        Mesh/GeometricObjectUtil.cpp
+        Mesh/MeshUtil.cpp
         MeshFeature/MeshFeature.cpp
         MeshFeature/MeshFeatureUtil.cpp
-        Test/MeshFeatureTest.cpp
-        CollisionDetection/TriTriIntersection.cpp
-        CollisionDetection/CollisionDetectionUtil.cpp
-        Transformation/TransformUtil.cpp
-        Mesh/MeshUtil.cpp
-        Visualization/VisualizationUtil.cpp
-        Test/TestUtil.cpp
-        Mesh/GeometricObjectUtil.cpp
         Polygon/PolygonUtil.cpp
-        Common/CommonUtil.cpp
+        Test/MeshFeatureTest.cpp
+        Test/TestUtil.cpp
+        Transformation/TransformUtil.cpp
+        Visualization/VisualizationUtil.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${VTK_LIBRARIES})

@@ -9,6 +9,7 @@
 
 class vtkPolyData;
 class vtkOBBTree;
+class vtkBoundingBox;
 class vtkPoints;
 class vtkCellArray;
 class vtkTriangle;
@@ -27,6 +28,11 @@ namespace MeshUtil
     vtkVector3d GetMeshDimension(vtkPolyData* polyData);
 
     vtkSmartPointer<vtkOBBTree> GetOBBTree(vtkPolyData* polyData);
+
+    std::vector<vtkVector3d> GetTriPoints(vtkPolyData* mesh, int tid);
+
+    vtkBoundingBox GetTriBounds(vtkSmartPointer<vtkPolyData> mesh, int tid);
+    vtkBoundingBox GetTrisBounds(vtkPolyData* mesh, const std::vector<int>& tids);
 
     vtkVector3d GetCellCenter(vtkPolyData* polyData, vtkIdType cellID);
 
