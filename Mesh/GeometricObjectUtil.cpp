@@ -9,6 +9,9 @@
 #include <vtkCubeSource.h>
 #include <vtkCylinderSource.h>
 #include <vtkMatrix4x4.h>
+#include <vtkCardinalSpline.h>
+#include <vtkParametricSpline.h>
+#include <vtkParametricFunctionSource.h>
 
 #include "../Transformation/TransformUtil.h"
 
@@ -134,6 +137,25 @@ namespace GeometricObjectUtil
         cube->Update();
 
         return cube->GetOutput();
+    }
+
+    vtkSmartPointer<vtkPolyData> GetCurvePolyData(vtkPoints* points)
+    {
+        auto xSpline = vtkSmartPointer<vtkCardinalSpline>::New();
+        auto ySpline = vtkSmartPointer<vtkCardinalSpline>::New();
+        auto zSpline = vtkSmartPointer<vtkCardinalSpline>::New();
+
+        auto spline = vtkSmartPointer<vtkParametricSpline>::New();
+        spline->SetXSpline(xSpline);
+        spline->SetYSpline(ySpline);
+        spline->SetZSpline(zSpline);
+        spline->SetPoints(points);
+
+        auto functionSource = vtkSmartPointer<vtkParametricFunctionSource>::New();
+        functionSource->SetParametricFunction(spline);
+        functionSource->Update();
+
+        return functionSource->GetOutput();
     }
 
     vtkSmartPointer<vtkPolyData> GetCylinderPolyData(const vtkVector3d& center, const double radius, const double height, const int resolution)

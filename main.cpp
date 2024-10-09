@@ -3,7 +3,6 @@
 
 #include <vtkPolyData.h>
 
-#include "IO/IOUtil.h"
 #include "Test/TestUtil.h"
 #include "Test/MeshFeatureTest.h"
 

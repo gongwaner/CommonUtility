@@ -11,6 +11,7 @@ project(VTKCommonUtility)
 find_package(VTK COMPONENTS
         CommonColor
         CommonCore
+        CommonComputationalGeometry
         CommonDataModel
         FiltersCore
         FiltersGeneral

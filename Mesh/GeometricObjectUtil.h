@@ -13,13 +13,18 @@ namespace GeometricObjectUtil
 
     vtkSmartPointer<vtkPolyData> GetSpherePolyData(const vtkVector3d& center, double radius, int phiResolution, int thetaResolution);
 
+    /**
+     * Point(s) visualization
+     */
     vtkSmartPointer<vtkPolyData> GetPointPolyData(const vtkVector3d& point);
+
     vtkSmartPointer<vtkPolyData> GetPointsPolyData(vtkPoints* points);
 
     /**
-     * Return line polydata for visualization. If you want the mesh for export, use GetLineMesh() instead
+     * Line visualization. If you want the mesh for export, use GetLineMesh() instead of GetLinePolyData()
      */
     vtkSmartPointer<vtkPolyData> GetLinePolyData(const vtkVector3d& start, const vtkVector3d& end);
+
     vtkSmartPointer<vtkPolyData> GetLinePolyData(const vtkVector3d& start, const vtkVector3d& dir, double length);
 
     vtkSmartPointer<vtkPolyData> GetLineMesh(const vtkVector3d& lineStart, const vtkVector3d& lineEnd, double radius);
@@ -27,6 +32,11 @@ namespace GeometricObjectUtil
     vtkSmartPointer<vtkPolyData> GetPlanePolyData(double center[3], double normal[3], int xResolution, int yResolution, int width, int height);
 
     vtkSmartPointer<vtkPolyData> GetCubePolyData(const vtkVector3d& pos, double size);
+
+    /**
+     * Curve visualization
+     */
+    vtkSmartPointer<vtkPolyData> GetCurvePolyData(vtkPoints* points);
 
     /**
      * Return a polygonal cylinder centered at given center.
