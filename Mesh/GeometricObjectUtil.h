@@ -9,10 +9,6 @@ class vtkPoints;
 
 namespace GeometricObjectUtil
 {
-    vtkSmartPointer<vtkSphere> GetSphereImplicitFunction(const vtkVector3d& sphereCenter, double radius);
-
-    vtkSmartPointer<vtkPolyData> GetSpherePolyData(const vtkVector3d& center, double radius, int phiResolution, int thetaResolution);
-
     /**
      * Point(s) visualization
      */
@@ -29,14 +25,24 @@ namespace GeometricObjectUtil
 
     vtkSmartPointer<vtkPolyData> GetLineMesh(const vtkVector3d& lineStart, const vtkVector3d& lineEnd, double radius);
 
-    vtkSmartPointer<vtkPolyData> GetPlanePolyData(double center[3], double normal[3], int xResolution, int yResolution, int width, int height);
-
-    vtkSmartPointer<vtkPolyData> GetCubePolyData(const vtkVector3d& pos, double size);
+    vtkSmartPointer<vtkPolyData> GetDashedLinePolyData(const std::vector<vtkVector3d>& points, double dashLength, double gapLength);
 
     /**
      * Curve visualization
      */
     vtkSmartPointer<vtkPolyData> GetCurvePolyData(vtkPoints* points);
+
+    /**
+     * Sphere visualization
+     */
+    vtkSmartPointer<vtkPolyData> GetSpherePolyData(const vtkVector3d& center, double radius, int phiResolution, int thetaResolution);
+
+    vtkSmartPointer<vtkSphere> GetSphereImplicitFunction(const vtkVector3d& sphereCenter, double radius);
+
+    /**
+     * Cube visualization
+     */
+    vtkSmartPointer<vtkPolyData> GetCubePolyData(const vtkVector3d& pos, double size);
 
     /**
      * Return a polygonal cylinder centered at given center.
@@ -45,8 +51,11 @@ namespace GeometricObjectUtil
     vtkSmartPointer<vtkPolyData> GetCylinderPolyData(const vtkVector3d& center, double radius, double height, int resolution);
 
     /**
-     * Given plane center and normal, return its axis X and Y
+     * Plane visualization
      */
+    vtkSmartPointer<vtkPolyData> GetPlanePolyData(double center[3], double normal[3], int xResolution, int yResolution, int width, int height);
+
+    /** Given plane center and normal, return its axis X and Y*/
     void GetPlaneAxes(double center[3], double normal[3], double axisX[3], double axisY[3]);
 }
 
