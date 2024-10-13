@@ -3,6 +3,7 @@
 #include <vtkVectorOperators.h>
 #include <vtkMatrix4x4.h>
 #include <vtkVertexGlyphFilter.h>
+#include <vtkAppendPolyData.h>
 #include <vtkLineSource.h>
 #include <vtkLine.h>
 #include <vtkCardinalSpline.h>
@@ -37,6 +38,24 @@ namespace GeometricObjectUtil
         vertexFilter->Update();
 
         return vertexFilter->GetOutput();
+    }
+
+    vtkSmartPointer<vtkPolyData> GetPointsAsSpheresPolyData(const std::vector<vtkVector3d>& pointsVec, const double radius)
+    {
+        auto appendFilter = vtkSmartPointer<vtkAppendPolyData>::New();
+
+        for(const auto& point: pointsVec)
+        {
+            auto sphereSource = vtkSmartPointer<vtkSphereSource>::New();
+            sphereSource->SetCenter(point.GetData());
+            sphereSource->SetRadius(radius);
+            sphereSource->Update();
+
+            appendFilter->AddInputData(sphereSource->GetOutput());
+        }
+
+        appendFilter->Update();
+        return appendFilter->GetOutput();
     }
 
     vtkSmartPointer<vtkPolyData> GetLinePolyData(const vtkVector3d& start, const vtkVector3d& end)

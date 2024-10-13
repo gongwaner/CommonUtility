@@ -49,6 +49,7 @@ add_executable(${PROJECT_NAME} MACOSX_BUNDLE main.cpp
         MeshFeature/MeshFeature.cpp
         MeshFeature/MeshFeatureUtil.cpp
         Polygon/PolygonUtil.cpp
+        Rendering/RenderingUtil.cpp
         Test/MeshFeatureTest.cpp
         Test/TestUtil.cpp
         Transformation/TransformUtil.cpp

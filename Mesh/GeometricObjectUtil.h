@@ -16,6 +16,10 @@ namespace GeometricObjectUtil
 
     vtkSmartPointer<vtkPolyData> GetPointsPolyData(vtkPoints* points);
 
+    //Return points as poly data in specified radius. Difference between this function and GetPointsPolyData(vtkPoints*)
+    //is this function uses vtkSphereSource internally and allows specified radius.
+    vtkSmartPointer<vtkPolyData> GetPointsAsSpheresPolyData(const std::vector<vtkVector3d>& pointsVec, double radius);
+
     /**
      * Line visualization. If you want the mesh for export, use GetLineMesh() instead of GetLinePolyData()
      */
@@ -55,7 +59,7 @@ namespace GeometricObjectUtil
      */
     vtkSmartPointer<vtkPolyData> GetPlanePolyData(double center[3], double normal[3], int xResolution, int yResolution, int width, int height);
 
-    /** Given plane center and normal, return its axis X and Y*/
+    //Given plane center and normal, return its axis X and Y
     void GetPlaneAxes(double center[3], double normal[3], double axisX[3], double axisY[3]);
 }
 
