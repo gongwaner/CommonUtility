@@ -26,12 +26,12 @@ namespace MeshFeatureUtil
         lut->SetColorSpaceToHSV();
 
         //use a color series to create a transfer function
-        auto numColors = colorSeries->GetNumberOfColors();
-        auto interval = scalarRange[1] - scalarRange[0];
+        const auto numColors = colorSeries->GetNumberOfColors();
+        const auto interval = scalarRange[1] - scalarRange[0];
         const double scale = 1.0 / 255.0;
         for(int i = 0; i < numColors; i++)
         {
-            vtkColor3ub color = colorSeries->GetColor(i);
+            const auto color = colorSeries->GetColor(i);
 
             double dColor[3];
             for(int k = 0; k < 3; ++k)
@@ -85,10 +85,10 @@ namespace MeshFeatureUtil
         renWin->SetSize(windowWidth, windowHeight);
         renWin->SetWindowName("Feature Visualization");
 
-        auto iRen = vtkSmartPointer<vtkRenderWindowInteractor>::New();
-        iRen->SetRenderWindow(renWin);
+        auto interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
+        interactor->SetRenderWindow(renWin);
         //the interactor must be set prior to enabling the widget.
-        iRen->SetRenderWindow(renWin);
+        interactor->SetRenderWindow(renWin);
 
         //add the actors to the scene
         auto colors = vtkSmartPointer<vtkNamedColors>::New();
@@ -97,7 +97,7 @@ namespace MeshFeatureUtil
         renderer->SetBackground(colors->GetColor3d("DarkSlateGray").GetData());
 
         renWin->Render();
-        iRen->Start();
+        interactor->Start();
     }
 
     void ColorMapping(vtkSmartPointer<vtkPolyData> polyData, const std::vector<double>& feature, const vtkVector4d& initColor)
@@ -112,19 +112,20 @@ namespace MeshFeatureUtil
             colorArray->InsertNextTuple4(initColor[0], initColor[1], initColor[2], initColor[3]);
         }
 
-        double min = *std::min_element(feature.begin(), feature.end());
-        double max = *std::max_element(feature.begin(), feature.end());
-        double interval = max - min;
+        const auto min = *std::min_element(feature.begin(), feature.end());
+        const auto max = *std::max_element(feature.begin(), feature.end());
+        const auto interval = max - min;
         printf("min = %f, max = %f, interval = %f\n", min, max, interval);
 
         auto colorVector = Color::ColorJet;
         for(int i = 0; i < feature.size(); ++i)
         {
-            double t = (feature[i] - min) / interval;
+            const double t = (feature[i] - min) / interval;
             int index = (int) (t * colorVector.size());
             if(index >= colorVector.size())
                 index = colorVector.size() - 1;
-            auto color = colorVector[index];
+            
+            const auto color = colorVector[index];
             colorArray->SetTuple4(i, color[0], color[1], color[2], color[3]);
         }
 

@@ -68,32 +68,32 @@ namespace IOUtil
         std::cout << "Reading " << fileDir << std::endl;
 
         if(!PathExist(fileDir))
-            throw std::runtime_error("ReadMesh(). Path does not exist!");
+            throw std::runtime_error(std::string(__FUNCTION__) + "() ERROR: Path does not exist!");
 
         const auto extension = GetFileExtension(fileDir);
         vtkSmartPointer<vtkPolyData> polyData;
-        if(extension == ".ply")
+        if(extension == PlyExtension)
         {
             auto reader = vtkSmartPointer<vtkPLYReader>::New();
             reader->SetFileName(fileDir);
             reader->Update();
             polyData = reader->GetOutput();
         }
-        else if(extension == ".obj")
+        else if(extension == ObjExtension)
         {
             auto reader = vtkSmartPointer<vtkOBJReader>::New();
             reader->SetFileName(fileDir);
             reader->Update();
             polyData = reader->GetOutput();
         }
-        else if(extension == ".stl")
+        else if(extension == StlExtension)
         {
             auto reader = vtkSmartPointer<vtkSTLReader>::New();
             reader->SetFileName(fileDir);
             reader->Update();
             polyData = reader->GetOutput();
         }
-        else if(extension == ".vtk")
+        else if(extension == VtkExtension)
         {
             auto reader = vtkSmartPointer<vtkPolyDataReader>::New();
             reader->SetFileName(fileDir);
@@ -102,7 +102,7 @@ namespace IOUtil
         }
         else
         {
-            throw std::runtime_error("ReadMesh(). ERROR: unsupported file extension!");
+            throw std::runtime_error(std::string(__FUNCTION__) + "() ERROR: unsupported file extension!");
         }
 
         printf("Poly data vertices cnt: %lld, cells cnt: %lld\n", polyData->GetNumberOfPoints(), polyData->GetNumberOfCells());
@@ -116,21 +116,21 @@ namespace IOUtil
             CreateParentDirectory(fileDir);
 
         const auto extension = GetFileExtension(fileDir);
-        if(extension == ".ply")
+        if(extension == PlyExtension)
         {
             auto writer = vtkSmartPointer<vtkPLYWriter>::New();
             writer->SetFileName(fileDir);
             writer->SetInputData(polyData);
             writer->Write();
         }
-        else if(extension == ".obj")
+        else if(extension == ObjExtension)
         {
             auto writer = vtkSmartPointer<vtkOBJWriter>::New();
             writer->SetFileName(fileDir);
             writer->SetInputData(polyData);
             writer->Write();
         }
-        else if(extension == ".stl")
+        else if(extension == StlExtension)
         {
             auto writer = vtkSmartPointer<vtkSTLWriter>::New();
             writer->SetFileName(fileDir);
@@ -148,15 +148,15 @@ namespace IOUtil
 
     void WriteColorMesh(const char* fileDir, vtkPolyData* polyData)
     {
-        if(GetFileExtension(fileDir) != ".ply")
+        if(GetFileExtension(fileDir) != PlyExtension)
         {
-            std::cerr << "WriteColorMesh(). ERROR: wrong extension. Should be .ply" << std::endl;
+            std::cerr << __FUNCTION__ << "() ERROR: wrong extension. Should be " << PlyExtension << std::endl;
             return;
         }
 
         if(!MeshUtil::HasColorInfo(polyData))
         {
-            std::cerr << "WriteColorMesh(). ERROR: polydata does not contain any color information. Use WriteMesh() instead." << std::endl;
+            std::cerr << __FUNCTION__ << "() ERROR: polydata does not contain any color information. Use WriteMesh() instead." << std::endl;
             return;
         }
 
@@ -195,7 +195,7 @@ namespace IOUtil
     {
         if(!PathExist(folder))
         {
-            throw std::runtime_error("ReadImageData(). Folder does not exist!");
+            throw std::runtime_error(std::string(__FUNCTION__) + "(). Folder does not exist!");
         }
 
         const auto path = std::filesystem::path(folder);

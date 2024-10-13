@@ -34,7 +34,7 @@ namespace MeshUtil
     vtkBoundingBox GetTriBounds(vtkSmartPointer<vtkPolyData> mesh, int tid);
     vtkBoundingBox GetTrisBounds(vtkPolyData* mesh, const std::vector<int>& tids);
 
-    vtkVector3d GetCellCenter(vtkPolyData* polyData, vtkIdType cellID);
+    vtkVector3d GetCellCenter(vtkPolyData* polyData, size_t cellID);
 
     /**
      * Extract the topological neighbors of given vid

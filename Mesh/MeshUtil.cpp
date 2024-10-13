@@ -88,13 +88,13 @@ namespace MeshUtil
         return boundingBox;
     }
 
-    vtkVector3d GetCellCenter(vtkPolyData* polyData, const vtkIdType cellID)
+    vtkVector3d GetCellCenter(vtkPolyData* polyData, const size_t cellID)
     {
         auto pointIdList = vtkSmartPointer<vtkIdList>::New();
         polyData->GetCellPoints(cellID, pointIdList);;
 
         vtkVector3d cellCenter(0, 0, 0);
-        for(vtkIdType i = 0; i < pointIdList->GetNumberOfIds(); i++)
+        for(size_t i = 0; i < pointIdList->GetNumberOfIds(); i++)
             cellCenter += vtkVector3d(polyData->GetPoint(pointIdList->GetId(i)));
 
         for(int i = 0; i < 3; ++i)
@@ -111,13 +111,13 @@ namespace MeshUtil
 
         std::unordered_set<int> neighborsSet;
 
-        for(vtkIdType i = 0; i < cellIdList->GetNumberOfIds(); i++)
+        for(size_t i = 0; i < cellIdList->GetNumberOfIds(); i++)
         {
             //get all vids in cell
             auto cellVids = vtkSmartPointer<vtkIdList>::New();
             polyData->GetCellPoints(cellIdList->GetId(i), cellVids);;
 
-            for(vtkIdType j = 0; j < cellVids->GetNumberOfIds(); ++j)
+            for(size_t j = 0; j < cellVids->GetNumberOfIds(); ++j)
             {
                 auto neighborVid = cellVids->GetId(j);
                 if(neighborVid != vid)

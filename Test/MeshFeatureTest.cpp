@@ -22,8 +22,7 @@ namespace UnitTest
 
         MeshFeatureUtil::ColorMapping(mesh, meanCurvature);
 
-        auto outFile = outputDir;
-        outFile.append("mean_curvature_feature.ply");
+        const auto outFile = outputDir / ("mean_curvature_feature" + IOUtil::PlyExtension);
         IOUtil::WriteColorMesh(outFile.string().c_str(), mesh);
     }
 
@@ -34,8 +33,7 @@ namespace UnitTest
 
         MeshFeatureUtil::ColorMapping(mesh, meanCurvature);
 
-        auto outFile = outputDir;
-        outFile.append("gaussian_curvature_feature.ply");
+        const auto outFile = outputDir / ("gaussian_curvature_feature" + IOUtil::PlyExtension);
         IOUtil::WriteColorMesh(outFile.string().c_str(), mesh);
     }
 
@@ -46,8 +44,7 @@ namespace UnitTest
 
         MeshFeatureUtil::ColorMapping(mesh, meanCurvature);
 
-        auto outFile = outputDir;
-        outFile.append("pca_feature.ply");
+        const auto outFile = outputDir / ("pca_feature" + IOUtil::PlyExtension);
         IOUtil::WriteColorMesh(outFile.string().c_str(), mesh);
     }
 }

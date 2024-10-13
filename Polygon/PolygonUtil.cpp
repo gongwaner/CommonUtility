@@ -9,10 +9,10 @@ namespace PolygonUtil
 {
     vtkVector3d GetTriangleNormal(const vtkVector3d& A, const vtkVector3d& B, const vtkVector3d& C)
     {
-        vtkVector3d AB = B - A;
-        vtkVector3d AC = C - A;
+        const auto AB = B - A;
+        const auto AC = C - A;
 
-        vtkVector3d normal = AB.Cross(AC);
+        const auto normal = AB.Cross(AC);
 
         return normal.Normalized();
     }
@@ -23,7 +23,7 @@ namespace PolygonUtil
 
         vtkVector3d pt0 = polygonPoints[0];
         vtkVector3d pt1;
-        auto numOfPoints = polygonPoints.size();
+        const auto numOfPoints = polygonPoints.size();
 
         for(unsigned int i = 0; i < numOfPoints; i++)
         {

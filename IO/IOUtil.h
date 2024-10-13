@@ -10,6 +10,12 @@ class vtkImageData;
 
 namespace IOUtil
 {
+    //extensions
+    const std::string PlyExtension = ".ply";
+    const std::string ObjExtension = ".obj";
+    const std::string StlExtension = ".stl";
+    const std::string VtkExtension = ".vtk";
+
     //poly data
     vtkSmartPointer<vtkPolyData> ReadMesh(const char* fileDir);
     void WriteMesh(const char* fileDir, vtkPolyData* polyData);
