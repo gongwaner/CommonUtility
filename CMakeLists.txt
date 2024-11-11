@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 
 if (APPLE)
     set(CMAKE_OSX_ARCHITECTURES arm64)
 endif ()
 
 project(VTKCommonUtility)
+add_definitions(-DCMAKE_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
 
 find_package(VTK COMPONENTS
         CommonColor
@@ -56,7 +56,10 @@ add_executable(${PROJECT_NAME} MACOSX_BUNDLE main.cpp
         Visualization/VisualizationUtil.cpp
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE ${VTK_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}
+        PRIVATE
+        ${VTK_LIBRARIES}
+)
 
 # vtk_module_autoinit is needed
 vtk_module_autoinit(

@@ -3,6 +3,8 @@
 #include <vtkAppendPolyData.h>
 #include <vtkMatrix4x4.h>
 
+#include <filesystem>
+
 #include "../Mesh/GeometricObjectUtil.h"
 #include "../Mesh/MeshUtil.h"
 #include "../Transformation/TransformUtil.h"
@@ -10,29 +12,20 @@
 
 namespace TestUtil
 {
-    std::filesystem::path GetDataDir()
+    std::string GetDataDir()
     {
-        const auto cwd = std::filesystem::current_path();
-        printf("current working dir: %s\n", cwd.string().c_str());
+        const std::filesystem::path cmakeDir(CMAKE_SOURCE_DIR);
+        const auto dataDir = cmakeDir / "Data";
 
-        std::filesystem::path dataDir;
-
-#ifdef _WIN32
-        auto projectDir = cwd.parent_path();
-        printf("projectDir dir: %s\n", projectDir.string().c_str());
-#elif __APPLE__
-        auto projectDir = cwd.parent_path().parent_path().parent_path().parent_path();
-        printf("projectDir dir: %s\n", projectDir.string().c_str());
-#else
-        printf("Operating system not supported!\n");
-#endif
-
-        return projectDir.append("Data");
+        return dataDir.string();
     }
 
-    std::filesystem::path GetOutputDir()
+    std::string GetOutputDir()
     {
-        return GetDataDir() / "output";
+        const std::filesystem::path dataFolderDir(GetDataDir());
+        const auto outputFolderDir = dataFolderDir / "output";
+
+        return outputFolderDir.string();
     }
 
     void Print(const std::string& msg, const double vec[3])

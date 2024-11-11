@@ -2,15 +2,13 @@
 
 #include <vtkVector.h>
 
-#include <filesystem>
-
 
 class vtkPolyData;
 
 namespace TestUtil
 {
-    std::filesystem::path GetDataDir();
-    std::filesystem::path GetOutputDir();
+    std::string GetDataDir();
+    std::string GetOutputDir();
 
     //print functions
     void Print(const std::string& msg, const double vec[3]);

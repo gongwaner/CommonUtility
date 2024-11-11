@@ -10,15 +10,16 @@
 int main()
 {
     const auto dataDir = TestUtil::GetDataDir();
-    printf("dataDir dir: %s\n", dataDir.string().c_str());
+    printf("dataDir dir: %s\n", dataDir.c_str());
 
     if(!std::filesystem::is_directory(dataDir))
     {
-        printf("data directory does not exist!\n");
+        std::cerr << "data directory does not exist!" << std::endl;
         return 1;
     }
 
-    const auto inputFile = dataDir / "lowerJaw.stl";
+    const std::filesystem::path DataPath(dataDir);
+    const auto inputFile = DataPath / "lowerJaw.stl";
     const auto outDir = TestUtil::GetOutputDir();
 
     UnitTest::MeshFeatureTest meshFeatureTest;
