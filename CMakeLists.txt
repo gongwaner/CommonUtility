@@ -14,6 +14,7 @@ find_package(VTK COMPONENTS
         CommonDataModel
         FiltersCore
         FiltersGeneral
+        ImagingHybrid
         IOGeometry
         IOImage
         IOLegacy
@@ -43,6 +44,7 @@ add_executable(${PROJECT_NAME} MACOSX_BUNDLE
         src/CollisionDetection/TriTriIntersection.cpp
         src/Common/Color.h
         src/Common/CommonUtil.cpp
+        src/ImageData/ImageDataUtil.cpp
         src/IO/IOUtil.cpp
         src/Mesh/GeometricObjectUtil.cpp
         src/Mesh/MeshUtil.cpp
