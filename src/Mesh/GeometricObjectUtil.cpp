@@ -11,11 +11,12 @@
 #include <vtkParametricFunctionSource.h>
 #include <vtkSphere.h>
 #include <vtkSphereSource.h>
+#include <vtkPolygon.h>
 #include <vtkCubeSource.h>
 #include <vtkCylinderSource.h>
 #include <vtkPlaneSource.h>
 
-#include "../Transformation/TransformUtil.h"
+#include "TransformUtil.h"
 
 
 namespace GeometricObjectUtil
@@ -57,6 +58,29 @@ namespace GeometricObjectUtil
         appendFilter->Update();
         return appendFilter->GetOutput();
     }
+
+    vtkSmartPointer<vtkPolyData> GetContourPolygonPolyData(const std::vector<vtkVector3d>& contourPoints)
+    {
+        auto points = vtkSmartPointer<vtkPoints>::New();
+        for(auto& point: contourPoints)
+        {
+            points->InsertNextPoint(point.GetData());
+        }
+
+        auto polygon = vtkSmartPointer<vtkPolygon>::New();
+        for(int i = 0; i < contourPoints.size(); ++i)
+            polygon->GetPointIds()->InsertNextId(i);
+
+        auto cellArray = vtkSmartPointer<vtkCellArray>::New();
+        cellArray->InsertNextCell(polygon);
+
+        auto polygonPolyData = vtkSmartPointer<vtkPolyData>::New();
+        polygonPolyData->SetPoints(points);
+        polygonPolyData->SetPolys(cellArray);
+
+        return polygonPolyData;
+    }
+
 
     vtkSmartPointer<vtkPolyData> GetLinePolyData(const vtkVector3d& start, const vtkVector3d& end)
     {

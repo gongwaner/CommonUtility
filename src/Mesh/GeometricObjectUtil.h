@@ -20,6 +20,10 @@ namespace GeometricObjectUtil
     //is this function uses vtkSphereSource internally and allows specified radius.
     vtkSmartPointer<vtkPolyData> GetPointsAsSpheresPolyData(const std::vector<vtkVector3d>& pointsVec, double radius);
 
+    //Given a contour, connect the contour points in order and return the polygon polydata.
+    //Note: this function does not handle self intersection
+    vtkSmartPointer<vtkPolyData> GetContourPolygonPolyData(const std::vector<vtkVector3d>& contourPoints);
+
     /**
      * Line visualization. If you want the mesh for export, use GetLineMesh() instead of GetLinePolyData()
      */

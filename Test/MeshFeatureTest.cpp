@@ -2,9 +2,9 @@
 
 #include <vtkPolyData.h>
 
-#include "../MeshFeature/MeshFeature.h"
-#include "../MeshFeature/MeshFeatureUtil.h"
-#include "../IO/IOUtil.h"
+#include "MeshFeature.h"
+#include "MeshFeatureUtil.h"
+#include "IOUtil.h"
 
 
 namespace UnitTest

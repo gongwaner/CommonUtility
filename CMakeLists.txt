@@ -37,27 +37,39 @@ endif ()
 # Prevent a "command line is too long" failure in Windows.
 set(CMAKE_NINJA_FORCE_RESPONSE_FILE "ON" CACHE BOOL "Force Ninja to use response files.")
 
-add_executable(${PROJECT_NAME} MACOSX_BUNDLE main.cpp
-        CollisionDetection/CollisionDetectionUtil.cpp
-        CollisionDetection/TriTriIntersection.cpp
-        Common/Color.h
-        Common/CommonUtil.cpp
-        IO/IOUtil.cpp
-        Mesh/GeometricObjectUtil.cpp
-        Mesh/MeshUtil.cpp
-        MeshFeature/MeshFeature.cpp
-        MeshFeature/MeshFeatureUtil.cpp
-        Polygon/PolygonUtil.cpp
-        Rendering/RenderingUtil.cpp
+add_executable(${PROJECT_NAME} MACOSX_BUNDLE
+        main.cpp
+        src/CollisionDetection/CollisionDetectionUtil.cpp
+        src/CollisionDetection/TriTriIntersection.cpp
+        src/Common/Color.h
+        src/Common/CommonUtil.cpp
+        src/IO/IOUtil.cpp
+        src/Mesh/GeometricObjectUtil.cpp
+        src/Mesh/MeshUtil.cpp
+        src/MeshFeature/MeshFeature.cpp
+        src/MeshFeature/MeshFeatureUtil.cpp
+        src/Polygon/PolygonUtil.cpp
+        src/Rendering/RenderingUtil.cpp
+        src/Testing/TestUtil.cpp
+        src/Transformation/TransformUtil.cpp
+        src/Visualization/VisualizationUtil.cpp
         Test/MeshFeatureTest.cpp
-        Test/TestUtil.cpp
-        Transformation/TransformUtil.cpp
-        Visualization/VisualizationUtil.cpp
 )
 
 target_compile_definitions(${PROJECT_NAME}
         PRIVATE
         CMAKE_SOURCE_DIR="${CMAKE_SOURCE_DIR}"
+)
+
+target_include_directories(${PROJECT_NAME}
+        PRIVATE
+        ${CMAKE_SOURCE_DIR}/src
+        ${CMAKE_SOURCE_DIR}/src/Common
+        ${CMAKE_SOURCE_DIR}/src/IO
+        ${CMAKE_SOURCE_DIR}/src/Mesh
+        ${CMAKE_SOURCE_DIR}/src/MeshFeature
+        ${CMAKE_SOURCE_DIR}/src/Testing
+        ${CMAKE_SOURCE_DIR}/src/Transformation
 )
 
 target_link_libraries(${PROJECT_NAME}

@@ -7,7 +7,7 @@
 #include <vtkVectorOperators.h>
 
 #include "MeshFeatureUtil.h"
-#include "../Mesh/MeshUtil.h"
+#include "MeshUtil.h"
 
 
 namespace MeshFeature

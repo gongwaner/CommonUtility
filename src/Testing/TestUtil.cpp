@@ -5,9 +5,9 @@
 
 #include <filesystem>
 
-#include "../Mesh/GeometricObjectUtil.h"
-#include "../Mesh/MeshUtil.h"
-#include "../Transformation/TransformUtil.h"
+#include "GeometricObjectUtil.h"
+#include "MeshUtil.h"
+#include "TransformUtil.h"
 
 
 namespace TestUtil

@@ -20,8 +20,8 @@
 #include <iostream>
 #include <filesystem>
 
-#include "../Common/Color.h"
-#include "../Mesh/MeshUtil.h"
+#include "Color.h"
+#include "MeshUtil.h"
 
 
 namespace IOUtil
