@@ -1,5 +1,6 @@
 #include "ImageDataUtil.h"
 
+#include <vtkSmartPointer.h>
 #include <vtkImageData.h>
 #include <vtkSphere.h>
 #include <vtkSampleFunction.h>
@@ -7,7 +8,7 @@
 
 namespace ImageDataUtil
 {
-    vtkVector3d GetVoxelPositionFromIndex(vtkImageData* imageData, int x, int y, int z)
+    vtkVector3d GetVoxelPositionFromIndex(vtkImageData* imageData, const int x, const int y, const int z)
     {
         auto dims = imageData->GetDimensions();
         auto origin = imageData->GetOrigin();
