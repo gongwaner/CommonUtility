@@ -64,7 +64,7 @@ target_compile_definitions(${PROJECT_NAME}
 )
 
 target_include_directories(${PROJECT_NAME}
-        PRIVATE
+        PUBLIC
         ${CMAKE_SOURCE_DIR}/src
         ${CMAKE_SOURCE_DIR}/src/Common
         ${CMAKE_SOURCE_DIR}/src/IO
