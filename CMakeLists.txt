@@ -88,6 +88,12 @@ add_library(${INTERFACE_LIBRARY_NAME} INTERFACE)
 target_include_directories(${INTERFACE_LIBRARY_NAME}
         INTERFACE
         ${INCLUDE_DIRS}
+        #more exposed include directories
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/CollisionDetection
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/ImageData
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/Polygon
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/Rendering
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/Visualization
 )
 
 target_link_libraries(${INTERFACE_LIBRARY_NAME}
