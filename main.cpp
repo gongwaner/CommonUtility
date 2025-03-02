@@ -1,16 +1,29 @@
 #include <iostream>
 #include <filesystem>
 
-#include <vtkPolyData.h>
-
-#include "TestUtil.h"
 #include "Test/MeshFeatureTest.h"
 
 
+std::string GetDataDir()
+{
+    const std::filesystem::path cmakeDir(CMAKE_SOURCE_DIR);
+    const auto dataDir = cmakeDir / "Data";
+
+    return dataDir.string();
+}
+
+std::string GetOutputDir()
+{
+    const std::filesystem::path dataFolderDir(GetDataDir());
+    const auto outputFolderDir = dataFolderDir / "output";
+
+    return outputFolderDir.string();
+}
+
 int main()
 {
-    const auto dataDir = TestUtil::GetDataDir();
-    printf("dataDir dir: %s\n", dataDir.c_str());
+    const auto dataDir = GetDataDir();
+    std::cout << "data dir: " << dataDir << std::endl;
 
     if(!std::filesystem::is_directory(dataDir))
     {
@@ -20,7 +33,14 @@ int main()
 
     const std::filesystem::path DataPath(dataDir);
     const auto inputFile = DataPath / "lowerJaw.stl";
-    const auto outDir = TestUtil::GetOutputDir();
+    const auto outDir = GetOutputDir();
+
+    //create the output folder if it does not exist
+    if(!std::filesystem::exists(outDir))
+    {
+        std::cerr << "output directory " << outDir << " does not exist!" << std::endl;
+        std::filesystem::create_directory(outDir);
+    }
 
     UnitTest::MeshFeatureTest meshFeatureTest;
     meshFeatureTest.SetUp(inputFile.string().c_str(), outDir);

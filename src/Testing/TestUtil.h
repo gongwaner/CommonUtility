@@ -7,9 +7,6 @@ class vtkPolyData;
 
 namespace TestUtil
 {
-    std::string GetDataDir();
-    std::string GetOutputDir();
-
     //print functions
     void Print(const std::string& msg, const double vec[3]);
     void Print(const std::string& msg, const vtkVector3d& vec);
@@ -29,6 +26,7 @@ namespace TestUtil
      * Append line onto mesh
      */
     void AppendLine(vtkSmartPointer<vtkPolyData>& mesh, const vtkVector3d& lineStart, const vtkVector3d& lineEnd, double radius);
+
     void AppendLine(vtkSmartPointer<vtkPolyData>& mesh, const std::pair<vtkVector3d, vtkVector3d>& line, double radius);
 
     /**

@@ -1,7 +1,6 @@
 #include "TestUtil.h"
 
 #include <vtkAppendPolyData.h>
-#include <vtkMatrix4x4.h>
 
 #include <filesystem>
 
@@ -12,22 +11,6 @@
 
 namespace TestUtil
 {
-    std::string GetDataDir()
-    {
-        const std::filesystem::path cmakeDir(CMAKE_SOURCE_DIR);
-        const auto dataDir = cmakeDir / "Data";
-
-        return dataDir.string();
-    }
-
-    std::string GetOutputDir()
-    {
-        const std::filesystem::path dataFolderDir(GetDataDir());
-        const auto outputFolderDir = dataFolderDir / "output";
-
-        return outputFolderDir.string();
-    }
-
     void Print(const std::string& msg, const double vec[3])
     {
         std::cout << msg << vec[0] << ", " << vec[1] << ", " << vec[2] << std::endl;
