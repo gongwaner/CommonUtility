@@ -33,7 +33,7 @@ namespace GeometricObjectUtil
 
     vtkSmartPointer<vtkPolyData> GetLineMesh(const vtkVector3d& lineStart, const vtkVector3d& lineEnd, double radius);
 
-    vtkSmartPointer<vtkPolyData> GetDashedLinePolyData(const std::vector<vtkVector3d>& points, double dashLength, double gapLength);
+    vtkSmartPointer<vtkPolyData> GetDashedLinePolyData(const double start[3], const double dir[3], double lineLength, double dashLength, double gap);
 
     /**
      * Curve visualization

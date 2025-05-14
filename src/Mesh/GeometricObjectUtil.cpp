@@ -112,44 +112,44 @@ namespace GeometricObjectUtil
         return line;
     }
 
-    vtkSmartPointer<vtkPolyData> GetDashedLinePolyData(const std::vector<vtkVector3d>& points, const double dashLength, const double gapLength)
+    vtkSmartPointer<vtkPolyData> GetDashedLinePolyData(const double start[3], const double dir[3],
+                                                       const double lineLength, const double dashLength, const double gap)
     {
-        auto dashedLinePoints = vtkSmartPointer<vtkPoints>::New();
+        // Normalize direction
+        vtkVector3d unitDir(dir[0], dir[1], dir[2]);
+        unitDir.Normalize();
+
+        vtkVector3d pos{start[0], start[1], start[2]};
+
+        auto points = vtkSmartPointer<vtkPoints>::New();
         auto lines = vtkSmartPointer<vtkCellArray>::New();
-        double totalLength = 0.0;
 
-        for(size_t i = 1; i < points.size(); ++i)
+        double traveled = 0.0;
+        vtkIdType ptId = 0;
+
+        while(traveled < lineLength)
         {
-            const auto start = points[i - 1];
-            const auto end = points[i];
-            const auto direction = (end - start).Normalized();
-            const double segmentLength = (end - start).Norm();
+            const vtkVector3d dashStart{pos[0], pos[1], pos[2]};
+            const double segment = std::min(dashLength, lineLength - traveled);
+            const vtkVector3d dashEnd = dashStart + unitDir * segment;
 
-            while(totalLength < segmentLength)
-            {
-                const auto dashStart = start + direction * totalLength;
-                totalLength += dashLength;
-                if(totalLength > segmentLength)
-                    break;
+            points->InsertNextPoint(dashStart.GetData());
+            points->InsertNextPoint(dashEnd.GetData());
 
-                const auto dashEnd = start + direction * totalLength;
-                const auto idStart = dashedLinePoints->InsertNextPoint(dashStart.GetData());
-                const auto idEnd = dashedLinePoints->InsertNextPoint(dashEnd.GetData());
+            auto line = vtkSmartPointer<vtkLine>::New();
+            line->GetPointIds()->SetId(0, ptId++);
+            line->GetPointIds()->SetId(1, ptId++);
+            lines->InsertNextCell(line);
 
-                auto line = vtkSmartPointer<vtkLine>::New();
-                line->GetPointIds()->SetId(0, idStart);
-                line->GetPointIds()->SetId(1, idEnd);
-                lines->InsertNextCell(line);
-
-                totalLength += gapLength;
-            }
-
-            totalLength -= segmentLength;
+            // Move to next dash start (end of dash + gap)
+            traveled += segment + gap;
+            pos = dashEnd + unitDir * gap;
         }
 
         auto polyData = vtkSmartPointer<vtkPolyData>::New();
-        polyData->SetPoints(dashedLinePoints);
+        polyData->SetPoints(points);
         polyData->SetLines(lines);
+
         return polyData;
     }
 
