@@ -10,8 +10,14 @@
 <br/>Include this project as a submodule for your project. Refer to [git submodule doc](https://git-scm.com/docs/git-submodule) for more details.
 <br/>Once you added the submodule into your project, in CMakeLists.txt of your project, do
 ```
-# Add the submodule as a subdirectory
+#add the submodule as a subdirectory
 add_subdirectory(CommonUtility)
+
+#include submodule
+target_include_directories(${PROJECT_NAME}
+        PRIVATE
+        ${PROJECT_SOURCE_DIR}
+)
 
 #link to submodule
 target_link_libraries(${PROJECT_NAME}
