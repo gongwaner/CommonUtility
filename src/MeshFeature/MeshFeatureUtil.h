@@ -6,7 +6,7 @@
 
 #include <vector>
 
-#include "../Common/Color.h"
+#include "Color.h"
 
 
 class vtkPolyData;

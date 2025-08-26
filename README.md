@@ -4,7 +4,7 @@
 <br/>Common utility functions for VTK projects. 
 
 <br/>**Requirements** 
-<br/>VTK 9.2+
+<br/>VTK 9.4.0
 
 <br/>**Usage**
 <br/>Include this project as a submodule for your project. Refer to [git submodule doc](https://git-scm.com/docs/git-submodule) for more details.

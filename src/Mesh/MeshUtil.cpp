@@ -8,7 +8,7 @@
 #include <vtkAppendPolyData.h>
 #include <vtkPointData.h>
 #include <vtkTriangle.h>
-#include <vtkIdFilter.h>
+#include <vtkGenerateIds.h>
 #include <vtkFeatureEdges.h>
 
 #include <queue>
@@ -167,7 +167,7 @@ namespace MeshUtil
     {
         const auto arrayName = "ids";
 
-        auto idFilter = vtkSmartPointer<vtkIdFilter>::New();
+        auto idFilter = vtkSmartPointer<vtkGenerateIds>::New();
         idFilter->SetInputData(polyData);
         idFilter->SetPointIds(true);
         idFilter->SetCellIds(false);
