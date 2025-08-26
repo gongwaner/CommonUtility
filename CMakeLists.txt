@@ -62,6 +62,7 @@ add_library(${OBJECT_LIBRARY_NAME}
         src/IO/IOUtil.cpp
         src/Mesh/GeometricObjectUtil.cpp
         src/Mesh/MeshUtil.cpp
+        src/Mesh/TopologyUtil.cpp
         src/MeshFeature/MeshFeature.cpp
         src/MeshFeature/MeshFeatureUtil.cpp
         src/Polygon/PolygonUtil.cpp

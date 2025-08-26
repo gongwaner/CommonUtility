@@ -2,8 +2,6 @@
 
 #include <vtkVector.h>
 
-#include <unordered_set>
-
 #include "Color.h"
 
 
@@ -35,29 +33,6 @@ namespace MeshUtil
     vtkBoundingBox GetTrisBounds(vtkPolyData* mesh, const std::vector<int>& tids);
 
     vtkVector3d GetCellCenter(vtkPolyData* polyData, size_t cellID);
-
-    /**
-     * Extract the topological neighbors of given vid
-     */
-    std::unordered_set<int> GetNeighborVids(vtkPolyData* polyData, int vid);
-
-    /**
-   * Extract the topological n ring neighbors vids of given vid
-   * @return vector of n ring neighbor vids. Note: the input vertex itself is included in result.
-   */
-    std::vector<int> GetNRingNeighbors(vtkPolyData* polyData, int vid, int nring);
-
-    /**
-     * Return boundary vertices ids of given mesh.
-     * Note: the returned result is a list of UNSORTED vertices ids.
-     */
-    std::vector<int> GetUnsortedBoundaryVids(vtkPolyData* polyData);
-
-    /*
-     * Return boundary vertices ids in a loop of the given mesh.
-     * The returned result is sorted.
-     */
-    std::vector<int> GetBoundaryLoopVids(vtkPolyData* polyData);
 
     vtkSmartPointer<vtkPolyData> GetLargestComponent(vtkPolyData* polyData);
 
