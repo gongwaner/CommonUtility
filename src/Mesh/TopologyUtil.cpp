@@ -2,6 +2,7 @@
 
 #include <vtkPolyData.h>
 #include <vtkPointData.h>
+#include <vtkExtractEdges.h>
 #include <vtkGenerateIds.h>
 #include <vtkFeatureEdges.h>
 #include <vtkLine.h>
@@ -12,7 +13,58 @@
 
 namespace TopologyUtil
 {
-    std::vector<std::vector<int>> GetTriangleVidsVector(vtkPolyData* polyData)
+    std::vector<std::pair<int, int>> GetEdgeVids(vtkPolyData* polyData)
+    {
+        const auto arrayName = "OriginalIDs";
+
+        auto originalIDs = vtkSmartPointer<vtkIntArray>::New();
+        originalIDs->SetName(arrayName);
+        originalIDs->SetNumberOfComponents(1);
+        originalIDs->SetNumberOfTuples(polyData->GetNumberOfPoints());
+
+        for(vtkIdType i = 0; i < polyData->GetNumberOfPoints(); ++i)
+        {
+            originalIDs->SetValue(i, i);
+        }
+
+        polyData->GetPointData()->AddArray(originalIDs);
+
+        auto extractEdges = vtkSmartPointer<vtkExtractEdges>::New();
+        extractEdges->SetInputData(polyData);
+        extractEdges->Update();
+
+        auto output = extractEdges->GetOutput();
+        vtkCellArray* lines = output->GetLines();
+        vtkDataArray* originalIDsArray = output->GetPointData()->GetArray(arrayName);
+
+        std::vector<std::pair<int, int>> edgeVidsVector;
+        if(!originalIDsArray)
+        {
+            std::cerr << "Error: original ids array not found in output." << std::endl;
+            return edgeVidsVector;
+        }
+
+        auto pointIds = vtkSmartPointer<vtkIdList>::New();
+        lines->InitTraversal();
+        while(lines->GetNextCell(pointIds))
+        {
+            if(pointIds->GetNumberOfIds() == 2)//each line has 2 points
+            {
+                const auto startId = pointIds->GetId(0);
+                const auto endId = pointIds->GetId(1);
+
+                //look up the original IDs using the local point IDs from the output
+                const auto startVid = originalIDsArray->GetTuple1(startId);
+                const auto endVid = originalIDsArray->GetTuple1(endId);
+
+                edgeVidsVector.push_back({static_cast<int>(startVid), static_cast<int>(endVid)});
+            }
+        }
+
+        return edgeVidsVector;
+    }
+
+    std::vector<std::vector<int>> GetTriangleVids(vtkPolyData* polyData)
     {
         const auto count = polyData->GetNumberOfCells();
         std::vector<std::vector<int>> triangles(count);
@@ -177,19 +229,22 @@ namespace TopologyUtil
 
     std::vector<std::pair<int, int>> GetBoundaryEdgeVids(vtkPolyData* polyData)
     {
-        //add a point data array with the original point IDs.
-        auto idFilter = vtkSmartPointer<vtkGenerateIds>::New();
-        idFilter->SetInputData(polyData);
-        idFilter->SetPointIds(true);
-        idFilter->SetCellIds(false);
-        idFilter->SetPointIdsArrayName("OriginalIDs");
-        idFilter->Update();
+        const auto arrayName = "OriginalIDs";
 
-        auto idFilterOutput = idFilter->GetOutput();
+        auto originalIDs = vtkSmartPointer<vtkIntArray>::New();
+        originalIDs->SetName(arrayName);
+        originalIDs->SetNumberOfComponents(1);
+        originalIDs->SetNumberOfTuples(polyData->GetNumberOfPoints());
 
-        //use vtkFeatureEdges on the output of the idFilter. The "OriginalIDs" array will be preserved in the output.
+        for(vtkIdType i = 0; i < polyData->GetNumberOfPoints(); ++i)
+        {
+            originalIDs->SetValue(i, i);
+        }
+
+        polyData->GetPointData()->AddArray(originalIDs);
+
         auto featureEdges = vtkSmartPointer<vtkFeatureEdges>::New();
-        featureEdges->SetInputData(idFilterOutput);
+        featureEdges->SetInputData(polyData);
         featureEdges->BoundaryEdgesOn();
         featureEdges->ManifoldEdgesOff();
         featureEdges->NonManifoldEdgesOff();
@@ -202,26 +257,23 @@ namespace TopologyUtil
         const auto edgesCnt = lines->GetNumberOfCells();
         std::vector<std::pair<int, int>> edges;
 
-        //retrieve the point data array containing the original IDs
-        vtkDataArray* originalIDs = boundaryEdges->GetPointData()->GetArray("OriginalIDs");
-        if(!originalIDs)
+        vtkDataArray* originalIDsArray = boundaryEdges->GetPointData()->GetArray(arrayName);
+        if(!originalIDsArray)
         {
-            std::cerr << "Error: OriginalIDs array not found in output." << std::endl;
+            std::cerr << "Error: original ids array not found in output." << std::endl;
             return edges;
         }
 
-        //traverse all  edges
         for(auto i = 0; i < edgesCnt; i++)
         {
-            const std::string className = boundaryEdges->GetCell(i)->GetClassName();
-            if(className == "vtkLine")
+            auto cell = vtkSmartPointer<vtkGenericCell>::New();
+            boundaryEdges->GetCell(i, cell);
+
+            if(cell->GetCellType() == VTK_LINE)
             {
-                auto line = dynamic_cast<vtkLine*>(boundaryEdges->GetCell(i));;
-
-                const auto startVid = originalIDs->GetTuple1(line->GetPointIds()->GetId(0));
-                const auto endVid = originalIDs->GetTuple1(line->GetPointIds()->GetId(1));
-
-                edges.push_back({startVid, endVid});
+                const auto startVid = originalIDsArray->GetTuple1(cell->GetPointId(0));
+                const auto endVid = originalIDsArray->GetTuple1(cell->GetPointId(1));
+                edges.push_back({static_cast<int>(startVid), static_cast<int>(endVid)});
             }
         }
 

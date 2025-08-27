@@ -10,7 +10,9 @@ class vtkCellArray;
 
 namespace TopologyUtil
 {
-    std::vector<std::vector<int>> GetTriangleVidsVector(vtkPolyData* polyData);
+    std::vector<std::pair<int, int>> GetEdgeVids(vtkPolyData* polyData);
+
+    std::vector<std::vector<int>> GetTriangleVids(vtkPolyData* polyData);
 
     /**
      * Extract the topological neighbors of given vid
