@@ -13,6 +13,17 @@
 
 namespace TopologyUtil
 {
+    struct PairHash
+    {
+        size_t operator()(const std::pair<int, int>& p) const
+        {
+            size_t h1 = std::hash<int>{}(p.first);
+            size_t h2 = std::hash<int>{}(p.second);
+
+            return h1 ^ (h2 << 1);
+        }
+    };
+
     std::vector<std::pair<int, int>> GetEdgeVids(vtkPolyData* polyData)
     {
         const auto arrayName = "OriginalIDs";
@@ -229,55 +240,41 @@ namespace TopologyUtil
 
     std::vector<std::pair<int, int>> GetBoundaryEdgeVids(vtkPolyData* polyData)
     {
-        const auto arrayName = "OriginalIDs";
+        std::unordered_map<std::pair<int, int>, int, PairHash> edgeVidsCountMap;
 
-        auto originalIDs = vtkSmartPointer<vtkIntArray>::New();
-        originalIDs->SetName(arrayName);
-        originalIDs->SetNumberOfComponents(1);
-        originalIDs->SetNumberOfTuples(polyData->GetNumberOfPoints());
+        //iterate through all triangles
+        vtkCellArray* polys = polyData->GetPolys();
+        polys->InitTraversal();
 
-        for(vtkIdType i = 0; i < polyData->GetNumberOfPoints(); ++i)
+        auto pointIds = vtkSmartPointer<vtkIdList>::New();
+        while(polys->GetNextCell(pointIds))
         {
-            originalIDs->SetValue(i, i);
-        }
+            if(pointIds->GetNumberOfIds() != 3)//a triangle has 3 points
+                continue;
 
-        polyData->GetPointData()->AddArray(originalIDs);
-
-        auto featureEdges = vtkSmartPointer<vtkFeatureEdges>::New();
-        featureEdges->SetInputData(polyData);
-        featureEdges->BoundaryEdgesOn();
-        featureEdges->ManifoldEdgesOff();
-        featureEdges->NonManifoldEdgesOff();
-        featureEdges->FeatureEdgesOff();
-        featureEdges->Update();
-
-        auto boundaryEdges = featureEdges->GetOutput();
-        vtkCellArray* lines = boundaryEdges->GetLines();
-
-        const auto edgesCnt = lines->GetNumberOfCells();
-        std::vector<std::pair<int, int>> edges;
-
-        vtkDataArray* originalIDsArray = boundaryEdges->GetPointData()->GetArray(arrayName);
-        if(!originalIDsArray)
-        {
-            std::cerr << "Error: original ids array not found in output." << std::endl;
-            return edges;
-        }
-
-        for(auto i = 0; i < edgesCnt; i++)
-        {
-            auto cell = vtkSmartPointer<vtkGenericCell>::New();
-            boundaryEdges->GetCell(i, cell);
-
-            if(cell->GetCellType() == VTK_LINE)
+            //get the three edges of the current triangle
+            for(int i = 0; i < 3; ++i)
             {
-                const auto startVid = originalIDsArray->GetTuple1(cell->GetPointId(0));
-                const auto endVid = originalIDsArray->GetTuple1(cell->GetPointId(1));
-                edges.push_back({static_cast<int>(startVid), static_cast<int>(endVid)});
+                const auto v1 = pointIds->GetId(i);
+                const auto v2 = pointIds->GetId((i + 1) % 3);
+
+                //create a canonical edge key
+                const auto key = (v1 < v2) ? std::make_pair(v1, v2) : std::make_pair(v2, v1);
+                edgeVidsCountMap[key]++;
             }
         }
 
-        return edges;
+        //extract boundary edges
+        std::vector<std::pair<int, int>> boundaryEdgeVids;
+        for(const auto& [edgeVids, count]: edgeVidsCountMap)
+        {
+            if(count == 1)
+            {
+                boundaryEdgeVids.push_back(edgeVids);
+            }
+        }
+
+        return boundaryEdgeVids;
     }
 
     vtkSmartPointer<vtkCellArray> GetTriangleTopologyAsCellArray(const std::vector<std::vector<int>>& triangleVids)
